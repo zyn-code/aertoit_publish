@@ -1,0 +1,85 @@
+<ul class="svc-grid list-plain">
+  @for (service of services(); track service.slug) {
+    <li class="svc-grid__cell">
+      <article class="svc">
+        <!-- Layer 0: the photograph fills the card. -->
+        <div class="svc__media" aria-hidden="true">
+          @if (service.hero_image) {
+            <img
+              [src]="service.hero_image"
+              alt=""
+              width="900"
+              height="640"
+              loading="lazy"
+              decoding="async"
+            />
+          }
+        </div>
+
+        <!-- Layer 1: the overlay is its own element, so `opacity` never
+             touches the title or the CTA. -->
+        <span class="svc__overlay" aria-hidden="true"></span>
+
+        <!-- Layer 2: the content, sitting over both. -->
+        <div class="svc__body">
+          <!-- The heading carries the primary link. The card is not one big
+               anchor: the sub-service links live inside it, and nesting them
+               under a stretched link makes them unreachable. -->
+          <h3 class="svc__title">
+            <a class="svc__link" [routerLink]="['/service', service.slug]">
+              {{ service.name }}
+            </a>
+          </h3>
+
+          @if (service.card_excerpt) {
+            <p class="svc__excerpt">{{ service.card_excerpt }}</p>
+          }
+
+          @if (children(service).length) {
+            <ul class="svc__subs list-plain" [attr.id]="'subs-' + service.slug">
+              @for (child of visibleChildren(service); track child.slug) {
+                <li>
+                  <a class="svc__sub" [routerLink]="['/service', child.slug]">
+                    {{ child.name }}
+                  </a>
+                </li>
+              }
+            </ul>
+
+            <!-- A real button with its state exposed, not a hover reveal:
+                 sub-services must be reachable by touch and by keyboard. -->
+            @if (hiddenCount(service) > 0) {
+              <button
+                type="button"
+                class="svc__more"
+                [attr.aria-expanded]="isExpanded(service)"
+                [attr.aria-controls]="'subs-' + service.slug"
+                (click)="toggle(service)"
+              >
+                {{ isExpanded(service) ? 'Voir moins' : 'Voir toutes les prestations' }}
+                <span
+                  class="svc__more-icon"
+                  [class.is-open]="isExpanded(service)"
+                  aria-hidden="true"
+                >
+                  <svg viewBox="0 0 24 24" focusable="false">
+                    <path d="M12 15.4 5.6 9l1.4-1.4 5 5 5-5L18.4 9z" />
+                  </svg>
+                </span>
+              </button>
+            }
+          }
+
+          <a class="svc__cta" [routerLink]="['/service', service.slug]">
+            <span>Découvrir le service</span>
+            <span class="svc__cta-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <path d="M5 12h12.2l-4.6-4.6L14 6l7 7-7 7-1.4-1.4 4.6-4.6H5z" />
+              </svg>
+            </span>
+          </a>
+        </div>
+      </article>
+    </li>
+  }
+</ul>

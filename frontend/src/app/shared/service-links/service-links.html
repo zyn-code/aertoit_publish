@@ -1,0 +1,82 @@
+<ul class="svc-links list-plain">
+  @for (item of items(); track item.slug) {
+    <li>
+      <!-- One anchor for the whole card, so nothing inside it needs to be
+           interactive on its own. -->
+      <a class="svc-link" [routerLink]="['/service', item.slug]">
+        <span class="svc-link__icon" aria-hidden="true">
+          <!-- Line drawings keyed on the `icon` column the services table
+               already carries. Two strokes each: the outline in blue, the
+               material in green. -->
+          @switch (item.icon) {
+            @case ('isolation') {
+              <svg viewBox="0 0 48 48" focusable="false">
+                <path class="ln" d="M8 22 24 9l16 13v17H8z" />
+                <path
+                  class="ln ln--accent"
+                  d="M17 24c3 2 3 5 0 7s-3 5 0 7M25 24c3 2 3 5 0 7s-3 5 0 7"
+                />
+              </svg>
+            }
+            @case ('velux') {
+              <svg viewBox="0 0 48 48" focusable="false">
+                <path class="ln" d="M6 32 19 11l23 6-13 21z" />
+                <path class="ln ln--accent" d="M14 30 22 17l14 3.7-8 13z" />
+              </svg>
+            }
+            @case ('etancheite') {
+              <svg viewBox="0 0 48 48" focusable="false">
+                <path
+                  class="ln"
+                  d="M24 7c6.5 8 10 13.2 10 17.6A10 10 0 0 1 14 24.6C14 20.2 17.5 15 24 7Z"
+                />
+                <path
+                  class="ln ln--accent"
+                  d="M9 35c3-2.4 6-2.4 9 0s6 2.4 9 0 6-2.4 9 0M9 41c3-2.4 6-2.4 9 0s6 2.4 9 0 6-2.4 9 0"
+                />
+              </svg>
+            }
+            @case ('charpente') {
+              <svg viewBox="0 0 48 48" focusable="false">
+                <path class="ln" d="M4 34 24 14l20 20" />
+                <path class="ln ln--accent" d="M9 34h30M24 14v20M15.5 24.5 24 34M32.5 24.5 24 34" />
+              </svg>
+            }
+            @case ('nettoyage') {
+              <svg viewBox="0 0 48 48" focusable="false">
+                <path class="ln" d="M10 20h16l-2 20H12zM10 20l8-11" />
+                <path class="ln ln--accent" d="M33 8v16M29 24h8l-1.5 15h-5L29 24Z" />
+              </svg>
+            }
+            @case ('couverture') {
+              <svg viewBox="0 0 48 48" focusable="false">
+                <path class="ln" d="M5 20 24 8l19 12" />
+                <path
+                  class="ln ln--accent"
+                  d="M8 26c3.2-2.7 6.4-2.7 9.6 0s6.4 2.7 9.6 0 6.4-2.7 9.6 0M8 34c3.2-2.7 6.4-2.7 9.6 0s6.4 2.7 9.6 0 6.4-2.7 9.6 0"
+                />
+              </svg>
+            }
+            @default {
+              <svg viewBox="0 0 48 48" focusable="false">
+                <path class="ln" d="M8 22 24 9l16 13v17H8z" />
+              </svg>
+            }
+          }
+        </span>
+
+        <span class="svc-link__text">
+          <span class="svc-link__title">{{ item.label }}</span>
+          <span class="svc-link__cta">
+            <span class="svc-link__cta-label">Découvrir le service</span>
+            <span class="svc-link__arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <path d="M5 12h12.2l-4.6-4.6L14 6l7 7-7 7-1.4-1.4 4.6-4.6H5z" />
+              </svg>
+            </span>
+          </span>
+        </span>
+      </a>
+    </li>
+  }
+</ul>

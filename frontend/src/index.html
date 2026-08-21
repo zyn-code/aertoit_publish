@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Aertoit Couverture</title>
+    <base href="/" />
+    <!-- Zoom is deliberately left unrestricted — see _base.scss (WCAG 1.4.4). -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#00509d" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+
+    <!-- Both faces are used above the fold, so a late swap would shift the
+       hero. Subset to the French character set — see fonts/README.md. -->
+    <link
+      rel="preload"
+      href="/assets/fonts/Satoshi-Variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/assets/fonts/Inter-Variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <!--
+    Marks that JavaScript is available, before first paint.
+
+    Scroll-reveal's hidden state is scoped to `html.js`, so this class is what
+    decides whether anything is hidden at all. Kept inline and synchronous on
+    purpose: an external or deferred script would paint the page visible first
+    and then hide it, producing a flash. If JS is off the class never lands and
+    every element simply stays visible.
+  -->
+    <script>
+      document.documentElement.classList.add('js');
+    </script>
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
+</html>

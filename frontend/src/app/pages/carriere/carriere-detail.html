@@ -1,0 +1,59 @@
+@let job = job$ | async;
+@let s = settings$ | async;
+
+@if (job) {
+  <nav class="breadcrumb" aria-label="Fil d’Ariane">
+    <div class="container">
+      <ol>
+        <li><a routerLink="/">Accueil</a></li>
+        <li><a routerLink="/a-propos" fragment="recrutement">Recrutement</a></li>
+        <li aria-current="page">{{ job.title }}</li>
+      </ol>
+    </div>
+  </nav>
+
+  <article class="section">
+    <div class="container container--narrow">
+      <header class="job-header">
+        <h1>{{ job.title }}</h1>
+        <ul class="job-header__facts">
+          <li><strong>Contrat</strong> {{ job.contract_type }}</li>
+          <li><strong>Lieu</strong> {{ job.location }}</li>
+        </ul>
+        <p class="job-header__summary">{{ job.summary }}</p>
+      </header>
+
+      @if (job.body) {
+        <div class="prose" [innerHTML]="job.body"></div>
+      }
+
+      <div class="job-apply">
+        <h2>Postuler</h2>
+        <p>
+          Envoyez votre CV et quelques mots sur votre parcours. Nous répondons à chaque candidature.
+        </p>
+        @if (s) {
+          <div class="job-apply__actions">
+            <a class="btn btn--primary" [href]="applyMailto(s.contact_email, job.title)">
+              Envoyer ma candidature
+            </a>
+            <a [href]="'tel:' + s.phone_e164" class="btn btn--ghost">{{ s.phone_display }}</a>
+          </div>
+        }
+      </div>
+    </div>
+  </article>
+} @else {
+  <section class="section">
+    <div class="container container--narrow">
+      <h1>Offre introuvable</h1>
+      <p>Cette offre n’existe plus ou a été pourvue.</p>
+      <a routerLink="/a-propos" fragment="recrutement" class="btn btn--primary">
+        Voir nos offres
+      </a>
+    </div>
+  </section>
+}
+
+<app-faq-section />
+<app-closing-cta />

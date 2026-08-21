@@ -1,0 +1,97 @@
+.legal {
+  h1 {
+    margin-bottom: var(--s-10);
+  }
+
+  section {
+    margin-bottom: var(--s-10);
+  }
+
+  h2 {
+    font-size: var(--fs-h3);
+    margin-bottom: var(--s-4);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--c-border);
+  }
+
+  h3 {
+    font-size: var(--fs-h4);
+    margin-top: var(--s-6);
+  }
+
+  p,
+  li {
+    color: var(--c-ink-muted);
+    max-width: 68ch;
+  }
+
+  &__dl {
+    display: grid;
+    grid-template-columns: minmax(12rem, 18rem) 1fr;
+    gap: var(--s-3) var(--s-6);
+    margin: 0;
+
+    dt {
+      font-weight: var(--fw-semibold);
+      color: var(--c-ink);
+    }
+
+    dd {
+      margin: 0;
+      color: var(--c-ink-muted);
+    }
+
+    // A phone or e-mail link is the whole value of its <dd>, so it is a
+    // standalone control rather than a link inside a sentence — WCAG 2.5.8's
+    // inline exception does not cover it and it needs the full target.
+    dd > a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+    }
+
+    address {
+      font-style: normal;
+    }
+  }
+
+  /** Unfilled legal identifier. Loud on purpose — an incomplete mentions
+      légales page is a compliance gap, so it must not look finished. */
+  &__todo {
+    display: inline-block;
+    padding: 2px var(--s-2);
+    background: #fff3cd;
+    color: #7a5a00;
+    border-radius: 4px;
+    font-size: var(--fs-small);
+    font-weight: var(--fw-medium);
+  }
+}
+
+@media (max-width: 640px) {
+  .legal__dl {
+    grid-template-columns: 1fr;
+    gap: var(--s-1) 0;
+
+    dd {
+      margin-bottom: var(--s-4);
+    }
+  }
+}
+
+// Especially subtle title treatment. These pages are dense legal text, so the
+// gradient fades out well before the body copy begins — the words never sit
+// on a tinted field.
+.legal {
+  background: linear-gradient(
+    180deg,
+    rgba(10, 91, 176, 0.07) 0%,
+    rgba(79, 180, 105, 0.04) 8%,
+    rgba(255, 255, 255, 1) 20%
+  );
+
+  h1 {
+    // Smaller, like every other internal page title.
+    font-size: var(--fs-h2);
+  }
+}

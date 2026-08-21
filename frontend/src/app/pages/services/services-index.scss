@@ -1,0 +1,165 @@
+// =====================================================================
+// Services index
+//
+// One alternating band per main service, its sub-services listed beneath
+// it — so the hierarchy reads as a hierarchy rather than as two unrelated
+// grids of cards.
+// =====================================================================
+
+.svc-row {
+  &__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: var(--s-12);
+    align-items: center;
+  }
+
+  // Media on the right for every second band. `direction` tricks would
+  // reverse the reading order too; explicit column placement keeps the DOM
+  // order — heading before image — intact for a screen reader.
+  &--reverse &__inner > &__media {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  &--reverse &__inner > &__body {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  &__media {
+    border-radius: var(--r-card-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    aspect-ratio: 4 / 3;
+    background: var(--c-surface);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--s-4);
+  }
+
+  &__title {
+    margin: 0;
+    font-size: var(--fs-h1);
+  }
+
+  &__excerpt {
+    margin: 0;
+    font-size: var(--fs-lead);
+    color: var(--c-ink-muted);
+  }
+
+  &__subs-title {
+    margin: var(--s-2) 0 0;
+    font-size: var(--fs-small);
+    font-weight: var(--fw-semibold);
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    // --c-ink-subtle measures 3.64:1 on white, below the 4.5:1 AA floor for
+    // text this size. --c-ink-muted is 6.4:1 and reads just as quietly.
+    color: var(--c-ink-muted);
+  }
+
+  &__subs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: var(--s-3);
+    width: 100%;
+  }
+
+  &__skeleton {
+    min-height: 22rem;
+  }
+}
+
+// A sub-service: its own card, its own link, its own excerpt.
+.sub-link {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--s-1) var(--s-3);
+  height: 100%;
+  min-height: 56px;
+  padding: var(--s-4);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-card);
+  background: var(--c-white);
+  text-decoration: none;
+  transition:
+    border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+
+  &__name {
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-small);
+    color: var(--c-ink);
+  }
+
+  &__text {
+    grid-column: 1;
+    font-size: var(--fs-tiny);
+    color: var(--c-ink-muted);
+    line-height: 1.45;
+  }
+
+  &__arrow {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    width: 18px;
+    height: 18px;
+    fill: var(--c-blue);
+    transition: transform var(--dur) var(--ease);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sub-link:hover {
+    border-color: var(--c-blue);
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-2px);
+  }
+  .sub-link:hover .sub-link__arrow {
+    transform: translateX(3px);
+  }
+}
+
+@media (max-width: 900px) {
+  .svc-row__inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-8);
+  }
+
+  // The explicit placement above only applies while there are two columns.
+  .svc-row--reverse .svc-row__inner > .svc-row__media,
+  .svc-row--reverse .svc-row__inner > .svc-row__body {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .svc-row__media {
+    aspect-ratio: 16 / 10;
+  }
+}
+
+@media (max-width: 560px) {
+  .svc-row__body .btn {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sub-link,
+  .sub-link__arrow {
+    transition: none;
+  }
+}

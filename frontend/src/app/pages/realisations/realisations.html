@@ -1,0 +1,82 @@
+@let projects = projects$ | async;
+
+<header class="page-hero">
+  <nav class="breadcrumb" aria-label="Fil d’Ariane">
+    <div class="container">
+      <ol>
+        <li><a routerLink="/">Accueil</a></li>
+        <li aria-current="page">Réalisations</li>
+      </ol>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-hero__inner">
+      <h1 class="page-hero__title">Quelques réalisations Aertoit en images</h1>
+      <p class="section__eyebrow">Nos Chantiers</p>
+      <p class="page-hero__lead">
+        Rénovation de couverture, isolation de combles, charpente traditionnelle ou pose de fenêtres
+        de toit — un aperçu de notre travail dans le Val-de-Marne.
+      </p>
+    </div>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container">
+    @if (projects?.length) {
+      <ul class="grid grid--3 project-list">
+        @for (project of projects; track project.slug) {
+          <li>
+            <a
+              [routerLink]="['/realisations', project.slug]"
+              class="card card--interactive project"
+            >
+              @if (project.image_after) {
+                <img
+                  [src]="project.image_after"
+                  [alt]="project.image_after_alt || ''"
+                  class="project__image"
+                  width="400"
+                  height="300"
+                  loading="lazy"
+                  decoding="async"
+                />
+              }
+              <div class="project__body">
+                @if (project.service_name) {
+                  <span class="project__tag">{{ project.service_name }}</span>
+                }
+                <h2 class="project__title">{{ project.title }}</h2>
+                <p class="project__meta">
+                  @if (project.commune) {
+                    <span>{{ project.commune }}</span>
+                  }
+                  @if (project.commune && project.year) {
+                    <span aria-hidden="true">·</span>
+                  }
+                  @if (project.year) {
+                    <span>{{ project.year }}</span>
+                  }
+                </p>
+                <p class="project__summary">{{ project.summary }}</p>
+              </div>
+            </a>
+          </li>
+        }
+      </ul>
+    } @else {
+      <!-- Honest empty state. Inventing chantiers to fill the grid would put
+           unverifiable claims on a contractor's site. -->
+      <div class="empty-state">
+        <h2 class="empty-state__title">Galerie en cours de constitution</h2>
+        <p>
+          Nous rassemblons actuellement les photos et les détails de nos chantiers récents. En
+          attendant, nos équipes se feront un plaisir de vous présenter des références comparables à
+          votre projet lors de la visite d’estimation.
+        </p>
+        <a routerLink="/contact" class="btn btn--primary">Demander un devis gratuit</a>
+      </div>
+    }
+  </div>
+</section>

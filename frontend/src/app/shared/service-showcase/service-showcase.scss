@@ -1,0 +1,352 @@
+// =====================================================================
+// Services showcase
+//
+// One photographic card per main service. Three layers, in this order:
+//
+//   .svc__media    z-index 0   the photograph, filling the card
+//   .svc__overlay  z-index 1   a gradient element of its own
+//   .svc__body     z-index 2   title, copy, sub-services, action
+//
+// The overlay is a separate element rather than a filter on the card so
+// that darkening the photograph never touches the title or the action:
+// `opacity` on a parent applies to the whole subtree, which is what made
+// white text look grey in the earlier version.
+// =====================================================================
+
+// Three across, so the six services fill two rows. 20px gutters: wide
+// enough to read as separate cards, tight enough to read as one block.
+.svc-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-5);
+
+  &__cell {
+    min-width: 0;
+  }
+}
+
+.svc {
+  position: relative;
+  display: flex;
+  height: 100%;
+  min-height: 23rem;
+  border-radius: var(--r-card-lg);
+  overflow: hidden;
+  // A stacking context of its own, so the layer order below is scoped to
+  // the card and cannot be reordered by anything else on the page.
+  isolation: isolate;
+  background: var(--c-blue-deep);
+  transition:
+    transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+
+  // --- layer 0: the photograph -----------------------------------------
+
+  &__media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      // Roofs are the subject and they sit above the horizon, so the crop
+      // favours the upper half rather than the default centre.
+      object-position: center 42%;
+      transition: transform var(--dur-slow) var(--ease-out);
+    }
+  }
+
+  // --- layer 1: the overlay --------------------------------------------
+
+  // Deepest at the top-left corner where the title sits, thinning across
+  // the diagonal so the lower right of the photograph stays legible.
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(
+      145deg,
+      rgba(7, 39, 58, 0.84) 0%,
+      rgba(7, 39, 58, 0.68) 38%,
+      rgba(18, 112, 98, 0.34) 68%,
+      rgba(7, 39, 58, 0.08) 100%
+    );
+    transition: opacity var(--dur) var(--ease);
+  }
+
+  // --- layer 2: the content --------------------------------------------
+
+  &__body {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    // Top of the card, where the overlay is deepest, rather than the foot,
+    // which is the thin end of the gradient.
+    justify-content: flex-start;
+    gap: var(--s-3);
+    width: 100%;
+    padding: var(--s-8);
+  }
+
+  &__title {
+    margin: 0;
+    max-width: 15ch;
+    font-size: var(--fs-h4);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--c-white);
+    text-wrap: balance;
+  }
+
+  &__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: inherit;
+    text-decoration: none;
+
+    // Makes the whole card surface open the main service. It sits at the
+    // foot of the content layer, so the sub-service links and the
+    // disclosure, which raise themselves, stay clickable above it.
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      border-radius: var(--r-card-lg);
+    }
+
+    &:hover {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    // The card clips its corners, so an outline drawn outside the anchor
+    // would be cut off. Drawn inside the stretched box instead.
+    &:focus-visible {
+      outline: none;
+    }
+
+    &:focus-visible::after {
+      outline: 3px solid var(--c-focus);
+      outline-offset: -3px;
+    }
+  }
+
+  &__excerpt {
+    margin: 0;
+    max-width: 34ch;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: var(--fs-small);
+    line-height: var(--lh-body);
+  }
+
+  // --- sub-services ------------------------------------------------------
+
+  &__subs {
+    position: relative;
+    z-index: 1; // above the stretched title target
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    max-width: 32ch;
+  }
+
+  &__sub {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: var(--s-1) var(--s-4);
+    border-radius: var(--r-pill);
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.34);
+    backdrop-filter: blur(6px);
+    color: var(--c-white);
+    font-size: var(--fs-tiny);
+    font-weight: var(--fw-medium);
+    text-decoration: none;
+    transition:
+      background-color var(--dur) var(--ease),
+      color var(--dur) var(--ease);
+
+    &:hover {
+      background: var(--c-white);
+      border-color: var(--c-white);
+      color: var(--c-blue-dark);
+    }
+  }
+
+  &__more {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-height: 44px;
+    padding: 0;
+    background: none;
+    border: 0;
+    color: rgba(255, 255, 255, 0.94);
+    font-family: var(--font-body);
+    font-size: var(--fs-tiny);
+    font-weight: var(--fw-semibold);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--c-white);
+    }
+  }
+
+  &__more-icon {
+    display: inline-flex;
+    transition: transform var(--dur) var(--ease);
+
+    svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    &.is-open {
+      transform: rotate(180deg);
+    }
+  }
+
+  // --- primary action ----------------------------------------------------
+
+  &__cta {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-3);
+    min-height: 44px;
+    margin-top: auto;
+    color: var(--c-white);
+    font-size: var(--fs-tiny);
+    font-weight: var(--fw-semibold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+  }
+
+  &__cta-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    flex: none;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    transition: transform var(--dur) var(--ease);
+
+    svg {
+      width: 13px;
+      height: 13px;
+      fill: currentColor;
+    }
+  }
+}
+
+// --- interactions --------------------------------------------------------
+
+// Restrained: the photograph creeps, the arrow steps, the overlay lifts a
+// little. Nothing moves far enough to make the row feel unsettled.
+@media (hover: hover) and (pointer: fine) {
+  .svc:hover {
+    box-shadow: var(--shadow-lg);
+  }
+  .svc:hover .svc__media img {
+    transform: scale(1.03);
+  }
+  .svc:hover .svc__overlay {
+    opacity: 0.94;
+  }
+  .svc:hover .svc__cta-icon {
+    transform: translateX(4px);
+  }
+}
+
+// --- responsive ----------------------------------------------------------
+
+@media (max-width: 1024px) {
+  .svc-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .svc {
+    min-height: 21rem;
+
+    &__body {
+      padding: var(--s-7);
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .svc-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-4);
+  }
+
+  .svc {
+    min-height: 19rem;
+
+    &__body {
+      padding: var(--s-6);
+    }
+
+    // One column is narrow enough that a diagonal leaves the right-hand
+    // third of the text over the thin end of the gradient. Runs down the
+    // card instead, keeping the same depths.
+    &__overlay {
+      background: linear-gradient(
+        170deg,
+        rgba(7, 39, 58, 0.84) 0%,
+        rgba(7, 39, 58, 0.68) 42%,
+        rgba(18, 112, 98, 0.34) 72%,
+        rgba(7, 39, 58, 0.12) 100%
+      );
+    }
+
+    &__title,
+    &__excerpt,
+    &__subs {
+      max-width: none;
+    }
+
+    // 36px clears WCAG 2.5.8 AA, but a one-column card is the touch case, so
+    // the chips take the 44px AAA row height here.
+    &__sub {
+      min-height: 44px;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .svc,
+  .svc__media img,
+  .svc__overlay,
+  .svc__cta-icon,
+  .svc__more-icon {
+    transition: none;
+  }
+
+  .svc:hover .svc__media img,
+  .svc:hover .svc__cta-icon {
+    transform: none;
+  }
+}

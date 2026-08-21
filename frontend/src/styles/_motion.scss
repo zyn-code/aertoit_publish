@@ -1,0 +1,121 @@
+// =====================================================================
+// Scroll reveal + hover motion
+//
+// Every hidden state is scoped to `html.js`, set by an inline script in
+// index.html before first paint. Without JavaScript nothing is ever hidden,
+// so content can never get stuck invisible — and prerendered HTML is
+// untouched, so crawlers always see the full page.
+// =====================================================================
+
+// Values measured off the live Framer site rather than guessed.
+//
+// Sampling a reveal frame-by-frame there gives opacity 0 -> 1 with
+// translateY(50px) -> 0, settling at ~711ms. Both channels decay on a clean
+// exponential (y: 50 → 46.1 → 37.2 → 28.9 … a constant ~0.78 ratio every
+// 33ms, time constant ≈140ms). Framer drives that per-frame in JS with no CSS
+// transition at all; cubic-bezier(0.25, 1, 0.5, 1) — easeOutQuart — is the
+// closest declarative match to the sampled curve.
+:root {
+  --reveal-distance: 50px;
+  --reveal-duration: 700ms;
+  --reveal-ease: cubic-bezier(0.25, 1, 0.5, 1);
+  --reveal-delay: 0ms;
+
+  /** Hero photo panel: how long each slide holds before the next. */
+  --hero-slide-hold: 5500ms;
+}
+
+.js {
+  [data-reveal] {
+    opacity: 0;
+    transition:
+      opacity var(--reveal-duration) var(--reveal-ease) var(--reveal-delay),
+      transform var(--reveal-duration) var(--reveal-ease) var(--reveal-delay);
+
+    // Deliberately no `will-change`. An earlier version set it here, which
+    // promoted every unrevealed element to its own compositor layer at once
+    // — 36 layers on the homepage before a single one animated. That was
+    // enough to wedge the renderer. Opacity and transform are already
+    // composited during a transition, so the hint bought nothing.
+  }
+
+  [data-reveal='up'] {
+    transform: translate3d(0, var(--reveal-distance), 0);
+  }
+  [data-reveal='fade'] {
+    transform: none;
+  }
+  [data-reveal='scale'] {
+    transform: scale(0.955);
+  }
+  [data-reveal='left'] {
+    transform: translate3d(calc(var(--reveal-distance) * -1), 0, 0);
+  }
+  [data-reveal='right'] {
+    transform: translate3d(var(--reveal-distance), 0, 0);
+  }
+
+  [data-reveal].is-revealed {
+    opacity: 1;
+    transform: none;
+    will-change: auto;
+  }
+}
+
+// --- hover / focus motion -------------------------------------------
+
+// Cards lift and deepen their shadow. Pointer-only: on touch there is no
+// hover, and applying it there leaves the state stuck after a tap.
+@media (hover: hover) and (pointer: fine) {
+  .card--interactive {
+    transition:
+      transform var(--dur) var(--ease),
+      box-shadow var(--dur) var(--ease);
+
+    &:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 34px 56px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  // Service cards nudge their arrow along on hover.
+  .service:hover .service__cta {
+    transform: translateX(4px);
+  }
+
+  // Media inside a card zooms slightly behind its own overflow clip.
+  .media-zoom {
+    overflow: hidden;
+
+    img {
+      transition: transform 520ms var(--reveal-ease);
+    }
+
+    &:hover img {
+      transform: scale(1.05);
+    }
+  }
+}
+
+.service__cta {
+  display: inline-block;
+  transition: transform var(--dur) var(--ease);
+}
+
+// --- reduced motion --------------------------------------------------
+// One override switches the whole system off: nothing hidden, nothing moves.
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal],
+  .js [data-reveal].is-revealed {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    will-change: auto;
+  }
+
+  .card--interactive:hover,
+  .service:hover .service__cta,
+  .media-zoom:hover img {
+    transform: none;
+  }
+}

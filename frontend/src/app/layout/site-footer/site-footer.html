@@ -1,0 +1,107 @@
+@let settings = settings$ | async;
+
+<footer class="site-footer">
+  <div class="container site-footer__grid">
+    <!-- Brand column. The tagline is Aertoit's own, from site_settings. -->
+    <div class="site-footer__col site-footer__col--brand">
+      <a routerLink="/" class="site-footer__brand">
+        <!-- Dark wordmark; the footer is a light surface. -->
+        <img
+          src="/assets/logo-aertoit-dark.svg"
+          alt="Aertoit Couverture — retour à l’accueil"
+          width="221"
+          height="96"
+          class="site-footer__logo"
+        />
+      </a>
+      @if (settings?.tagline) {
+        <p class="site-footer__tagline">{{ settings?.tagline }}</p>
+      }
+      @if (settings) {
+        <app-social-links [settings]="settings" />
+      }
+    </div>
+
+    <nav class="site-footer__col" aria-labelledby="footer-services">
+      <h2 id="footer-services" class="site-footer__heading">Nos prestations</h2>
+      <ul class="site-footer__list">
+        @for (service of services$ | async; track service.slug) {
+          <li>
+            <a [routerLink]="['/service', service.slug]">{{ service.name }}</a>
+          </li>
+        }
+      </ul>
+    </nav>
+
+    <nav class="site-footer__col" aria-labelledby="footer-nav">
+      <h2 id="footer-nav" class="site-footer__heading">Navigation</h2>
+      <ul class="site-footer__list">
+        <li><a routerLink="/">Accueil</a></li>
+        <li><a routerLink="/realisations">Nos réalisations</a></li>
+        <li><a routerLink="/blog">Conseils toiture</a></li>
+        <li><a routerLink="/a-propos">À propos</a></li>
+        <li><a routerLink="/contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <!-- Both the phone and the email come from site_settings, so the label
+         and the link target cannot diverge as they do on the live site. -->
+    <section class="site-footer__col" aria-labelledby="footer-contact">
+      <h2 id="footer-contact" class="site-footer__heading">Contact</h2>
+      @if (settings) {
+        <ul class="site-footer__list site-footer__list--contact">
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"
+              />
+            </svg>
+            <address>
+              {{ settings.address_street }}<br />
+              {{ settings.address_postal }} {{ settings.address_locality }}
+            </address>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1l-2.3 2.2Z"
+              />
+            </svg>
+            <a [href]="'tel:' + settings.phone_e164">{{ settings.phone_display }}</a>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4.2-8 4.8-8-4.8V6l8 4.8L20 6v2.2Z"
+              />
+            </svg>
+            <a [href]="'mailto:' + settings.contact_email">{{ settings.contact_email }}</a>
+          </li>
+        </ul>
+        <a routerLink="/contact" class="btn btn--primary btn--sm site-footer__cta">
+          Demande de devis
+        </a>
+      }
+    </section>
+  </div>
+
+  <!-- Legal links. Required by LCEN art. 6-III and absent from the live site,
+       where neither page exists at all. -->
+  <div class="container">
+    <div class="site-footer__legal">
+      <p class="site-footer__copyright">
+        © {{ currentYear }} {{ settings?.company_name }}. Tous droits réservés.
+      </p>
+      <ul class="site-footer__legal-links">
+        <li><a routerLink="/mentions-legales">Mentions légales</a></li>
+        <li><a routerLink="/politique-de-confidentialite">Politique de confidentialité</a></li>
+        <li>
+          <!-- Consent must be withdrawable as easily as it was given. -->
+          <button type="button" class="site-footer__link-button" (click)="consent.reopen()">
+            Paramètres des cookies
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</footer>

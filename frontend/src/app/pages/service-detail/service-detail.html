@@ -1,0 +1,150 @@
+@let service = service$ | async;
+@let settings = settings$ | async;
+
+@if (service) {
+  @let parent = parent$ | async;
+
+  <nav class="breadcrumb" aria-label="Fil d’Ariane">
+    <div class="container">
+      <ol>
+        <li><a routerLink="/">Accueil</a></li>
+        @if (parent) {
+          <li>
+            <a [routerLink]="['/service', parent.slug]">{{ parent.name }}</a>
+          </li>
+        }
+        <li aria-current="page">{{ service.name }}</li>
+      </ol>
+    </div>
+  </nav>
+
+  <article>
+    <!-- Image-led when the service has a photograph, plain surface when it
+         does not — rather than a bare centred title on white either way. -->
+    <header class="service-hero" [class.has-media]="!!service.hero_image" [class.is-sub]="!!parent">
+      @if (service.hero_image) {
+        <div class="service-hero__media" aria-hidden="true">
+          <img
+            [src]="service.hero_image"
+            alt=""
+            width="1600"
+            height="700"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </div>
+      }
+      <div class="container container--narrow service-hero__inner">
+        <!-- The live site serves three of its six service pages with no H1
+             at all. Every service page here has exactly one. -->
+        <h1>{{ service.h1 }}</h1>
+
+        <!-- Local-SEO service-area line. Not a heading, so the page
+             keeps exactly one H1 (the live site ships two here). -->
+        @if (service.communes?.length) {
+          <app-commune-rotator [communes]="service.communes ?? []" />
+        }
+        <p class="service-hero__intro">{{ service.intro }}</p>
+
+        <!-- Compact navigation to this category's own sub-services, visible
+             without hover and reachable by keyboard. The cards further down
+             carry the descriptions; these are the shortcut. -->
+        @let heroChildren = children$ | async;
+        @if (heroChildren?.length) {
+          <nav class="sub-nav" aria-labelledby="sub-nav-label">
+            <p class="sub-nav__label" id="sub-nav-label">Nos prestations de {{ service.name }}</p>
+            <ul class="sub-nav__list list-plain">
+              @for (child of heroChildren; track child.slug) {
+                <li>
+                  <a [routerLink]="['/service', child.slug]">{{ child.name }}</a>
+                </li>
+              }
+            </ul>
+          </nav>
+        }
+
+        <div class="service-hero__actions">
+          <a routerLink="/contact" class="btn btn--primary">Demander un devis gratuit</a>
+          @if (settings) {
+            <a
+              [href]="'tel:' + settings.phone_e164"
+              class="btn"
+              [class.btn--on-dark]="!!service.hero_image"
+              [class.btn--secondary]="!service.hero_image"
+            >
+              {{ settings.phone_display }}
+            </a>
+          }
+        </div>
+      </div>
+    </header>
+
+    @if (service.body) {
+      <div class="section">
+        <div class="container container--narrow prose" appReveal [innerHTML]="service.body"></div>
+      </div>
+    }
+
+    <!-- Sub-services. Without these the nine child pages would be reachable
+         only from the header dropdown. -->
+    @let children = children$ | async;
+    @if (children?.length) {
+      <section class="section section--surface" aria-labelledby="sub-services-title">
+        <div class="container">
+          <div class="section__header section__header--centered" appReveal>
+            <h2 id="sub-services-title">Nos prestations de {{ service.name }}</h2>
+          </div>
+          <ul class="grid sub-service-list">
+            @for (child of children; track child.slug; let i = $index) {
+              <li appReveal [revealOrder]="i">
+                <a [routerLink]="['/service', child.slug]" class="sub-service">
+                  @if (child.hero_image) {
+                    <span class="sub-service__media media-zoom">
+                      <img
+                        [src]="child.hero_image"
+                        [alt]="child.hero_image_alt || ''"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </span>
+                  }
+                  <h3 class="sub-service__title">{{ child.name }}</h3>
+                  <p class="sub-service__excerpt">{{ child.card_excerpt }}</p>
+                  <span class="sub-service__cta">
+                    Découvrir <span class="sub-service__arrow" aria-hidden="true">→</span>
+                  </span>
+                </a>
+              </li>
+            }
+          </ul>
+        </div>
+      </section>
+    }
+  </article>
+
+  <section class="section section--surface service-cta" aria-labelledby="service-cta-title">
+    <div class="container container--narrow" appReveal="scale">
+      <h2 id="service-cta-title">Un projet ? Parlons-en.</h2>
+      <p>
+        Nos équipes interviennent dans tout le Val-de-Marne. Décrivez-nous votre projet et recevez
+        une estimation gratuite.
+      </p>
+      <a routerLink="/contact" class="btn btn--primary">Obtenir mon devis</a>
+    </div>
+  </section>
+} @else {
+  <section class="section">
+    <div class="container container--narrow">
+      <h1>Prestation introuvable</h1>
+      <p>La prestation que vous cherchez n’existe pas ou n’est plus disponible.</p>
+      <a routerLink="/" class="btn btn--primary">Retour à l’accueil</a>
+    </div>
+  </section>
+}
+
+@if (service$ | async; as svc) {
+  <app-quick-quote [serviceSlug]="svc.slug" [sourcePage]="'/service/' + svc.slug" />
+}
+<app-why-choose-us />
+<app-faq-section />
+<app-closing-cta />

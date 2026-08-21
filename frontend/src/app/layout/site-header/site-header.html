@@ -1,0 +1,179 @@
+@let settings = settings$ | async;
+
+<header class="site-header" [class.is-scrolled]="scrolled()">
+  <div class="container site-header__inner">
+    <a routerLink="/" class="site-header__brand" (click)="close()">
+      <!-- The dark wordmark, because this bar is white. `logo-aertoit.svg` is
+           the white variant drawn for the old navy header; left pointing at it
+           after the header went light, it rendered white-on-white. -->
+      <img
+        src="/assets/logo-aertoit-dark.svg"
+        alt="Aertoit Couverture — retour à l’accueil"
+        width="221"
+        height="96"
+        class="site-header__logo"
+      />
+    </a>
+
+    <button
+      type="button"
+      class="site-header__toggle"
+      [attr.aria-expanded]="menuOpen()"
+      aria-controls="primary-navigation"
+      (click)="toggleMenu()"
+    >
+      <span class="visually-hidden">{{ menuOpen() ? 'Fermer le menu' : 'Ouvrir le menu' }}</span>
+      <span class="site-header__burger" [class.is-open]="menuOpen()" aria-hidden="true"></span>
+    </button>
+
+    <!-- A real <nav> landmark, so the navigation can be skipped or jumped to. -->
+    <nav
+      id="primary-navigation"
+      class="site-header__nav"
+      [class.is-open]="menuOpen()"
+      aria-label="Navigation principale"
+    >
+      <ul class="site-header__list">
+        <li>
+          <a
+            routerLink="/"
+            routerLinkActive="is-active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="close()"
+            >Accueil</a
+          >
+        </li>
+
+        <!-- Services disclosure. A <button>, not a hover target: a menu that
+             only opens on hover is unreachable by keyboard and unusable on
+             touch, where the first tap is the hover and the second navigates
+             away before the panel is read. -->
+        <li class="site-header__has-menu" (mouseleave)="onMenuLeave()">
+          <button
+            type="button"
+            class="site-header__menu-toggle"
+            [class.is-active]="onServiceRoute()"
+            [attr.aria-expanded]="servicesOpen()"
+            aria-controls="services-menu"
+            (click)="toggleServices()"
+            (mouseenter)="onTriggerEnter()"
+          >
+            Nos services
+            <span
+              class="site-header__caret"
+              [class.is-open]="servicesOpen()"
+              aria-hidden="true"
+            ></span>
+          </button>
+
+          <div
+            id="services-menu"
+            class="mega"
+            [class.is-open]="servicesOpen()"
+            (mouseenter)="onMenuEnter()"
+          >
+            <div class="mega__inner">
+              @for (cat of categories(); track cat.slug) {
+                <div class="mega__group">
+                  <!-- Desktop: the category is a plain link to its own page.
+                       Mobile turns it into a disclosure instead — see below. -->
+                  <a
+                    class="mega__cat"
+                    [routerLink]="['/service', cat.slug]"
+                    routerLinkActive="is-active"
+                    (click)="close()"
+                  >
+                    {{ cat.label }}
+                  </a>
+
+                  @if (cat.children.length) {
+                    <!-- Mobile only: a real button so the sub-list can be
+                         opened by touch and keyboard without hover. -->
+                    <button
+                      type="button"
+                      class="mega__toggle"
+                      [attr.aria-expanded]="isCategoryOpen(cat.slug)"
+                      [attr.aria-controls]="'mega-subs-' + cat.slug"
+                      (click)="toggleCategory(cat.slug)"
+                    >
+                      <span class="visually-hidden"> Prestations de {{ cat.label }} </span>
+                      <span
+                        class="mega__toggle-icon"
+                        [class.is-open]="isCategoryOpen(cat.slug)"
+                        aria-hidden="true"
+                      >
+                        <svg viewBox="0 0 24 24" focusable="false">
+                          <path d="M12 15.4 5.6 9l1.4-1.4 5 5 5-5L18.4 9z" />
+                        </svg>
+                      </span>
+                    </button>
+
+                    <ul
+                      class="mega__subs list-plain"
+                      [id]="'mega-subs-' + cat.slug"
+                      [class.is-open]="isCategoryOpen(cat.slug)"
+                    >
+                      @for (sub of cat.children; track sub.slug) {
+                        <li>
+                          <a
+                            [routerLink]="['/service', sub.slug]"
+                            routerLinkActive="is-active"
+                            (click)="close()"
+                            >{{ sub.name }}</a
+                          >
+                        </li>
+                      }
+                    </ul>
+                  }
+                </div>
+              } @empty {
+                <p class="mega__empty">Nos prestations sont momentanément indisponibles.</p>
+              }
+
+              <a class="mega__all" routerLink="/nos-prestations" (click)="close()">
+                Voir toutes les prestations
+              </a>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <a routerLink="/realisations" routerLinkActive="is-active" (click)="close()"
+            >Nos réalisations</a
+          >
+        </li>
+        <li>
+          <a routerLink="/blog" routerLinkActive="is-active" (click)="close()">Blog</a>
+        </li>
+        <li>
+          <a routerLink="/a-propos" routerLinkActive="is-active" (click)="close()">À propos</a>
+        </li>
+        <li>
+          <a routerLink="/contact" routerLinkActive="is-active" (click)="close()">Contact</a>
+        </li>
+      </ul>
+
+      <div class="site-header__actions">
+        @if (settings) {
+          <a class="site-header__phone" [href]="'tel:' + settings.phone_e164">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1l-2.3 2.2Z"
+              />
+            </svg>
+            <span class="visually-hidden">Appeler le </span>{{ settings.phone_display }}
+          </a>
+        }
+        <a routerLink="/contact" class="btn btn--primary btn--sm" (click)="close()">
+          Demande de devis
+        </a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- Dims the page behind the mobile drawer and closes it on tap. Inert to
+     assistive tech: Escape and the toggle already close the menu. -->
+@if (menuOpen()) {
+  <div class="site-header__scrim" aria-hidden="true" (click)="close()"></div>
+}

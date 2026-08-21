@@ -1,0 +1,43 @@
+@if (count()) {
+  <ul class="mosaic list-plain" [attr.data-count]="count()">
+    @for (tile of tiles(); track tile.post.slug) {
+      <li class="mosaic__cell" [class]="'mosaic__cell mosaic__cell--' + tile.area">
+        <article class="tile" [class]="'tile tile--' + tile.size + ' tile--' + tile.theme">
+          @if (tile.post.cover_image) {
+            <img
+              class="tile__img"
+              [src]="tile.post.cover_image"
+              [alt]="tile.post.cover_image_alt || ''"
+              width="900"
+              height="600"
+              loading="lazy"
+              decoding="async"
+            />
+          }
+
+          <!-- One anchor covering the tile, so the whole card is clickable
+               without nesting a second interactive element inside it. The CTA
+               below is a span, not a link. -->
+          <a class="tile__link" [routerLink]="['/blog', tile.post.slug]">
+            <span class="tile__body">
+              @if (tile.post.published_at) {
+                <time class="tile__date" [attr.datetime]="tile.post.published_at">
+                  {{ tile.post.published_at | date: 'longDate' }}
+                </time>
+              }
+
+              <h3 class="tile__title">{{ tile.post.title }}</h3>
+
+              <span class="tile__cta">
+                Lire l’article
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M5 12h12.2l-4.6-4.6L14 6l7 7-7 7-1.4-1.4 4.6-4.6H5z" />
+                </svg>
+              </span>
+            </span>
+          </a>
+        </article>
+      </li>
+    }
+  </ul>
+}

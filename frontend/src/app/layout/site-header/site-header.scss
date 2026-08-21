@@ -1,0 +1,529 @@
+// =====================================================================
+// Site header
+//
+// White, sticky, with its own edge. Previously it was transparent over the
+// homepage hero and carried the hero's navy elsewhere, so header and hero
+// read as one dark slab and interior pages opened on a second one.
+// =====================================================================
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--c-white);
+  border-bottom: 1px solid var(--c-border);
+  // Only the shadow animates on scroll. Animating the height or the
+  // background would reflow or repaint the whole bar on every scroll tick.
+  transition: box-shadow var(--dur) var(--ease);
+
+  &.is-scrolled {
+    box-shadow: var(--shadow-sm);
+  }
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-6);
+    min-height: var(--header-height);
+  }
+
+  &__brand {
+    display: inline-flex;
+    align-items: center;
+    min-height: 48px;
+    flex-shrink: 0;
+  }
+
+  &__logo {
+    height: 46px;
+    width: auto;
+  }
+
+  &__toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    background: none;
+    border: 1px solid var(--c-border-strong);
+    border-radius: var(--r-input);
+    color: var(--c-ink);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--c-surface);
+    }
+  }
+
+  // Three bars that fold into a cross when open, so the control reads as its
+  // own close button rather than needing a second one inside the drawer.
+  &__burger {
+    position: relative;
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: currentColor;
+    transition: background-color var(--dur) var(--ease);
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 20px;
+      height: 2px;
+      background: currentColor;
+      transition: transform var(--dur) var(--ease);
+    }
+    &::before {
+      top: -6px;
+    }
+    &::after {
+      top: 6px;
+    }
+
+    &.is-open {
+      background: transparent;
+
+      &::before {
+        transform: translateY(6px) rotate(45deg);
+      }
+      &::after {
+        transform: translateY(-6px) rotate(-45deg);
+      }
+    }
+  }
+
+  &__nav {
+    display: flex;
+    align-items: center;
+    gap: var(--s-8);
+    flex: 1;
+    justify-content: flex-end;
+  }
+
+  /**
+   * The desktop row.
+   *
+   * Only the mobile block below declared this list, so at every width above
+   * the breakpoint it fell back to an unstyled <ul>: markers showing, one
+   * link per line, and a header nearly 300px tall. That height is also what
+   * pushed the services panel — positioned `top: 100%` of the header — far
+   * below its own trigger.
+   */
+  &__list {
+    display: flex;
+    align-items: center;
+    gap: var(--s-6);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  // Deliberately unpositioned: the services panel is full-bleed, so it must
+  // resolve `left: 0; right: 0` against the header rather than against this
+  // 130px-wide item. Stated explicitly because it looks like an omission.
+  &__has-menu {
+    position: static;
+  }
+
+  // Links and the services toggle share one shape so the row reads evenly.
+  &__list > li > a,
+  &__menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-height: 44px;
+    padding-inline: var(--s-3);
+    border: 0;
+    border-radius: var(--r-input);
+    background: none;
+    font-family: var(--font-body);
+    font-size: var(--fs-small);
+    font-weight: var(--fw-medium);
+    color: var(--c-ink);
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      background-color var(--dur) var(--ease),
+      color var(--dur) var(--ease);
+
+    &:hover {
+      background: var(--c-surface);
+      color: var(--c-green-darker);
+    }
+  }
+
+  // The active route is marked by weight and an underline as well as colour,
+  // so it is not signalled by colour alone.
+  &__list > li > a.is-active,
+  &__menu-toggle.is-active {
+    color: var(--c-green-darker);
+    font-weight: var(--fw-semibold);
+    box-shadow: inset 0 -2px 0 var(--c-green-dark);
+    border-radius: var(--r-input) var(--r-input) 0 0;
+  }
+
+  &__has-menu {
+    position: static; // the mega-menu spans the bar, not this item
+  }
+
+  &__caret {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid currentColor;
+    transition: transform var(--dur) var(--ease);
+
+    &.is-open {
+      transform: rotate(180deg);
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+  }
+
+  &__phone {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-height: 44px;
+    font-size: var(--fs-small);
+    font-weight: var(--fw-semibold);
+    color: var(--c-ink);
+    text-decoration: none;
+    white-space: nowrap;
+
+    svg {
+      width: 18px;
+      height: 18px;
+      fill: var(--c-green-dark);
+      flex: none;
+    }
+
+    &:hover {
+      color: var(--c-green-darker);
+    }
+  }
+
+  &__scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    background: rgba(18, 24, 31, 0.45);
+  }
+}
+
+// --- services mega-menu ------------------------------------------------
+//
+// Full-bar panel with one column per group. Grouping comes from
+// `services.nav_group`, so adding a service never means editing this file.
+
+.mega {
+  display: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  background: var(--c-white);
+  border-top: 1px solid var(--c-border);
+  border-bottom: 1px solid var(--c-border);
+  box-shadow: var(--shadow-md);
+
+  &.is-open {
+    display: block;
+  }
+
+  &__inner {
+    width: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding: var(--s-7) var(--gutter) var(--s-6);
+    // Three by two on a wide screen. Six columns would compress the longer
+    // sub-service names and push the panel past the viewport.
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-6) var(--s-8);
+  }
+
+  &__group {
+    min-width: 0;
+  }
+
+  // The category title: heavier and larger than the links under it, so the
+  // two levels are told apart at a glance.
+  &__cat {
+    display: block;
+    padding-bottom: var(--s-2);
+    margin-bottom: var(--s-2);
+    border-bottom: 1px solid var(--c-border);
+    font-family: var(--font-heading);
+    font-size: var(--fs-small);
+    font-weight: var(--fw-semibold);
+    color: var(--c-ink);
+    text-decoration: none;
+
+    &:hover,
+    &.is-active {
+      color: var(--c-blue);
+      border-bottom-color: var(--c-blue-soft);
+    }
+  }
+
+  // Desktop shows every sub-list open, so the disclosure button is mobile-only.
+  &__toggle {
+    display: none;
+  }
+
+  &__subs {
+    display: flex;
+    flex-direction: column;
+
+    a {
+      display: block;
+      padding: var(--s-1) var(--s-2);
+      margin-inline: calc(var(--s-2) * -1);
+      border-radius: var(--r-input);
+      font-size: var(--fs-tiny);
+      color: var(--c-ink-muted);
+      text-decoration: none;
+      transition:
+        background-color var(--dur) var(--ease),
+        color var(--dur) var(--ease);
+
+      &:hover,
+      &.is-active {
+        background: var(--c-blue-tint);
+        color: var(--c-blue-dark);
+      }
+    }
+  }
+
+  &__all {
+    grid-column: 1 / -1;
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-top: var(--s-1);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--c-border);
+    width: 100%;
+    font-size: var(--fs-small);
+    font-weight: var(--fw-semibold);
+    color: var(--c-blue);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+
+    &:hover {
+      color: var(--c-blue-dark);
+    }
+  }
+
+  &__empty {
+    margin: 0;
+    color: var(--c-ink-muted);
+    font-size: var(--fs-small);
+  }
+}
+
+// --- mobile ------------------------------------------------------------
+
+@media (max-width: 1080px) {
+  .site-header {
+    &__toggle {
+      display: inline-flex;
+      order: 2;
+    }
+
+    // A panel, not an inline block: laying the drawer out in flow made the
+    // header itself grow to the height of the whole menu, which pushed the
+    // page content down behind it.
+    &__nav {
+      position: fixed;
+      top: var(--header-height);
+      right: 0;
+      bottom: 0;
+      width: min(22rem, 88vw);
+      z-index: 95;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      gap: var(--s-4);
+      padding: var(--s-5) var(--s-5) var(--s-10);
+      background: var(--c-white);
+      border-left: 1px solid var(--c-border);
+      box-shadow: var(--shadow-lg);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      transform: translateX(100%);
+      visibility: hidden;
+      transition:
+        transform var(--dur-slow) var(--ease-out),
+        visibility var(--dur-slow);
+
+      &.is-open {
+        transform: translateX(0);
+        visibility: visible;
+      }
+    }
+
+    &__list {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    &__list > li > a,
+    &__menu-toggle {
+      // Full width so a short label like "Blog" still gives a full-row target.
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      min-height: 52px;
+      padding-inline: var(--s-3);
+      font-size: var(--fs-body);
+      border-radius: var(--r-input);
+    }
+
+    &__list > li + li {
+      border-top: 1px solid var(--c-border);
+    }
+
+    &__list > li > a.is-active,
+    &__menu-toggle.is-active {
+      box-shadow: none;
+      background: var(--c-green-tint);
+      border-radius: var(--r-input);
+    }
+
+    &__actions {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--s-3);
+      margin-top: var(--s-4);
+      padding-top: var(--s-5);
+      border-top: 1px solid var(--c-border);
+    }
+
+    &__phone {
+      justify-content: center;
+      min-height: 48px;
+    }
+  }
+
+  // In the drawer the mega-menu is an accordion in normal flow: each category
+  // is a row with its own disclosure, and only one sub-list is open at a time.
+  .mega {
+    position: static;
+    border: 0;
+    box-shadow: none;
+    background: transparent;
+
+    &__inner {
+      display: block;
+      padding: var(--s-1) 0 var(--s-2) var(--s-3);
+    }
+
+    &__group {
+      display: grid;
+      // Category link and its toggle share a row; the sub-list spans both.
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      border-bottom: 1px solid var(--c-border);
+    }
+
+    &__cat {
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      padding: 0;
+      margin: 0;
+      border-bottom: 0;
+      font-size: var(--fs-small);
+    }
+
+    &__toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      padding: 0;
+      background: none;
+      border: 0;
+      color: var(--c-ink-muted);
+      cursor: pointer;
+    }
+
+    &__toggle-icon {
+      display: inline-flex;
+      transition: transform var(--dur) var(--ease);
+
+      svg {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
+      }
+
+      &.is-open {
+        transform: rotate(180deg);
+      }
+    }
+
+    /**
+     * Collapsed by default on mobile.
+     *
+     * Plain show/hide rather than the 0fr->1fr grid tween used elsewhere:
+     * that technique sizes a single grid row, and this list has one row per
+     * sub-service, so only the first would have collapsed. `aria-expanded`
+     * on the button carries the state either way.
+     */
+    &__subs {
+      grid-column: 1 / -1;
+      display: none;
+      flex-direction: column;
+      padding-bottom: var(--s-2);
+
+      &.is-open {
+        display: flex;
+      }
+
+      a {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        margin-inline: 0;
+        padding-left: var(--s-4);
+        // A step below the category above it, as on desktop: the two levels
+        // have to stay distinguishable when the accordion is open. The 44px
+        // row keeps the target size regardless of the type size.
+        font-size: var(--fs-tiny);
+        font-weight: var(--fw-regular);
+        color: var(--c-ink-muted);
+      }
+    }
+
+    &__all {
+      grid-column: auto;
+      width: auto;
+      border-top: 0;
+      padding-top: var(--s-3);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header__nav {
+    transition: none;
+  }
+}

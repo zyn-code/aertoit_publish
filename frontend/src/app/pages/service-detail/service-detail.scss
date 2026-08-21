@@ -1,0 +1,261 @@
+// Interior pages open on plain white with the title centred; the navy band
+// above is the header itself, not a hero. Matches the live site.
+.service-hero {
+  position: relative;
+  padding-block: var(--section-y);
+  text-align: center;
+  // Same shared treatment as every other internal page title.
+  background: var(--grad-page-title), var(--c-white);
+  border-bottom: 1px solid var(--c-border);
+  isolation: isolate;
+
+  &__inner {
+    position: relative;
+  }
+
+  h1 {
+    // Smaller than the display size it used to run at: this heading
+    // introduces the page, it is not the page.
+    font-size: var(--fs-h2);
+    margin-bottom: var(--s-5);
+  }
+
+  // Sub-service titles run a further 12% down: they are the longest on the
+  // site ("Isolation en Sarking Fibre de Bois") and sit one level below a
+  // main service, so they were reading larger than their place in the
+  // hierarchy. The main-service pages keep the size they were approved at.
+  &.is-sub h1 {
+    font-size: clamp(1.32rem, 1.09rem + 1.01vw, 1.87rem); // 21 -> 30
+  }
+
+  &__intro {
+    font-size: var(--fs-lead);
+    color: var(--c-ink-muted);
+    margin-bottom: var(--s-8);
+    margin-inline: auto;
+    max-width: 44rem;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-4);
+    justify-content: center;
+  }
+
+  // --- photographic variant -------------------------------------------
+  &.has-media {
+    background: var(--c-navy);
+    border-bottom: 0;
+
+    h1 {
+      color: var(--c-white);
+    }
+
+    .service-hero__intro {
+      color: rgba(255, 255, 255, 0.9);
+    }
+  }
+
+  &__media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 55%;
+    }
+
+    // The scrim rides on the media rather than being its own element, so
+    // there is one box to keep in sync instead of two.
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(11, 34, 63, 0.78) 0%, rgba(11, 34, 63, 0.86) 100%);
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .service-hero__actions .btn {
+    width: 100%;
+  }
+}
+
+// Sub-service cards, same soft-grey panel language as the homepage service
+// grid but without a photo — these pages are text-led.
+.sub-service-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+}
+
+.sub-service {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--s-4);
+  background: var(--c-white);
+  border-radius: var(--r-card);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  // Photo leads the card, matching the homepage service panels.
+  &__media {
+    display: block;
+    border-radius: var(--r-button);
+    overflow: hidden;
+    margin-bottom: var(--s-5);
+    aspect-ratio: 16 / 10;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  // Text inset so it lines up with the photo's rounded edge.
+  &__title {
+    font-size: var(--fs-h4);
+    padding-inline: var(--s-2);
+    margin-bottom: var(--s-3);
+  }
+
+  &__excerpt {
+    color: var(--c-ink-muted);
+    font-size: var(--fs-small);
+    padding-inline: var(--s-2);
+    flex: 1;
+    margin-bottom: var(--s-4);
+  }
+
+  &__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-height: 44px;
+    padding-inline: var(--s-2);
+    color: var(--c-green-dark);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-small);
+  }
+
+  &__arrow {
+    display: inline-block;
+    transition: transform var(--dur) var(--ease);
+  }
+
+  &:hover &__arrow {
+    transform: translate(3px, -3px);
+  }
+}
+
+.service-cta {
+  text-align: center;
+
+  p {
+    color: var(--c-ink-muted);
+    margin-bottom: var(--s-6);
+  }
+}
+
+// The rotator sits inside the hero, so on the photographic variant it has to
+// invert with everything else — its default blue is unreadable on the scrim.
+// ::ng-deep is required to reach into the child component's styles; it is
+// scoped by the `.service-hero.has-media` prefix so it cannot leak.
+.service-hero.has-media ::ng-deep .commune-rotator {
+  color: rgba(255, 255, 255, 0.92);
+
+  * {
+    color: inherit;
+  }
+}
+
+// --- sub-service shortcut nav -------------------------------------------
+//
+// Chips inside the page header. Visible without hover, keyboard reachable,
+// and wrapping rather than scrolling so nothing runs off a narrow screen.
+
+.sub-nav {
+  margin-top: var(--s-6);
+
+  &__label {
+    margin: 0 0 var(--s-3);
+    font-size: var(--fs-tiny);
+    font-weight: var(--fw-semibold);
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--c-ink-muted);
+  }
+
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--s-2);
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: var(--s-1) var(--s-4);
+    border: 1px solid var(--c-border-strong);
+    border-radius: var(--r-pill);
+    background: var(--c-white);
+    color: var(--c-ink);
+    font-size: var(--fs-tiny);
+    font-weight: var(--fw-medium);
+    text-decoration: none;
+    transition:
+      background-color var(--dur) var(--ease),
+      border-color var(--dur) var(--ease),
+      color var(--dur) var(--ease);
+
+    &:hover {
+      background: var(--c-blue-tint);
+      border-color: var(--c-blue-soft);
+      color: var(--c-blue-dark);
+    }
+  }
+}
+
+// On the photographic variant the chips sit on the scrim, so they invert.
+.service-hero.has-media {
+  .sub-nav__label {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .sub-nav a {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.34);
+    color: var(--c-white);
+
+    &:hover {
+      background: var(--c-white);
+      border-color: var(--c-white);
+      color: var(--c-blue-dark);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sub-nav a {
+    transition: none;
+  }
+}

@@ -1,0 +1,189 @@
+.post-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  &__count {
+    margin-top: var(--s-8);
+    font-size: var(--fs-small);
+    color: var(--c-ink-muted);
+  }
+}
+
+// Cards align row-for-row with their neighbours: a two-line title next to a
+// three-line one used to push the excerpt and link out of step across the
+// row. Subgrid hands the five bands down from the list so every card's
+// title, excerpt and link start on the same line. The flex rules below it
+// remain the fallback, and still bottom-align the link on their own.
+.post-list {
+  @supports (grid-template-rows: subgrid) {
+    li {
+      display: grid;
+      grid-row: span 5;
+      grid-template-rows: subgrid;
+    }
+  }
+}
+
+.post-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+
+  @supports (grid-template-rows: subgrid) {
+    display: grid;
+    grid-row: span 5;
+    grid-template-rows: subgrid;
+  }
+
+  &__image {
+    width: 100%;
+    aspect-ratio: 5 / 3;
+    object-fit: cover;
+  }
+
+  // Holds the media band open on the four posts with no photograph.
+  &__image--empty {
+    display: block;
+    background: linear-gradient(135deg, #e2e2e4 0%, #d6d6d9 100%);
+  }
+
+  &__date {
+    display: block;
+    padding: var(--s-6) var(--s-6) 0;
+    font-size: var(--fs-small);
+    color: var(--c-ink-muted);
+  }
+
+  &__title {
+    padding: var(--s-2) var(--s-6) 0;
+    font-size: var(--fs-h4);
+    margin-bottom: var(--s-3);
+  }
+
+  &__excerpt {
+    padding-inline: var(--s-6);
+    color: var(--c-ink-muted);
+    flex: 1;
+  }
+
+  // Green, matching the "En Savoir Plus" affordance on the service panels —
+  // the site uses green for "go deeper" links and blue for body links.
+  // green-dark rather than the brand green: #3AB449 on white is 2.72:1,
+  // which is unreadable at body size.
+  &__cta {
+    padding: 0 var(--s-6) var(--s-6);
+    font-weight: var(--fw-semibold);
+    color: var(--c-green-dark);
+  }
+}
+
+.article-header {
+  margin-bottom: var(--s-8);
+
+  h1 {
+    margin-bottom: var(--s-4);
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    font-size: var(--fs-small);
+    color: var(--c-ink-muted);
+    margin-bottom: var(--s-5);
+  }
+
+  &__excerpt {
+    font-size: 1.125rem;
+    color: var(--c-ink-muted);
+    margin: 0;
+  }
+}
+
+.article-cover {
+  width: 100%;
+  border-radius: var(--r-card);
+  margin-bottom: var(--s-10);
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.prose {
+  h2 {
+    margin-top: var(--s-10);
+    font-size: var(--fs-h3);
+  }
+
+  h3 {
+    margin-top: var(--s-8);
+    font-size: var(--fs-h4);
+  }
+
+  p,
+  li {
+    color: var(--c-ink-muted);
+  }
+
+  ul,
+  ol {
+    padding-left: var(--s-6);
+  }
+
+  li {
+    margin-bottom: var(--s-2);
+  }
+
+  img {
+    border-radius: var(--r-card);
+    margin-block: var(--s-6);
+  }
+
+  // Wide content scrolls inside itself rather than the page.
+  table {
+    display: block;
+    overflow-x: auto;
+    max-width: 100%;
+    border-collapse: collapse;
+  }
+}
+
+.article-cta {
+  text-align: center;
+
+  p {
+    color: var(--c-ink-muted);
+    margin-bottom: var(--s-6);
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-4);
+    justify-content: center;
+  }
+}
+
+// --- section gradients --------------------------------------------------
+//
+// Light section-level washes so the listing and the article read as composed
+// pages rather than one flat sheet. Kept faint on purpose: body copy stays on
+// a solid card or a near-white surface, never on a saturated field.
+
+.blog-list-band {
+  background: linear-gradient(180deg, rgba(233, 241, 251, 0.55) 0%, rgba(255, 255, 255, 1) 42%);
+}
+
+// The closing block of an article, before the shared CTA sections.
+.article-cta {
+  background: linear-gradient(
+    135deg,
+    rgba(10, 91, 176, 0.09) 0%,
+    rgba(79, 180, 105, 0.06) 55%,
+    rgba(255, 255, 255, 0.96) 100%
+  );
+}

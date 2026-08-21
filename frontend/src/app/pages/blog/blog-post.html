@@ -1,0 +1,68 @@
+@let post = post$ | async;
+
+@if (post) {
+  <nav class="breadcrumb" aria-label="Fil d’Ariane">
+    <div class="container">
+      <ol>
+        <li><a routerLink="/">Accueil</a></li>
+        <li><a routerLink="/blog">Blog</a></li>
+        <li aria-current="page">{{ post.title }}</li>
+      </ol>
+    </div>
+  </nav>
+
+  <article class="section">
+    <div class="container container--narrow">
+      <header class="article-header">
+        <h1>{{ post.title }}</h1>
+        <!-- Deck page 5: "Pas nominatif juste date de publication" — the
+             byline shows the date alone. `post.author` is still stored and
+             still feeds the Article JSON-LD, which requires an author. -->
+        <p class="article-header__meta">
+          <time [attr.datetime]="post.published_at">{{
+            post.published_at | date: 'longDate'
+          }}</time>
+        </p>
+        <p class="article-header__excerpt">{{ post.excerpt }}</p>
+      </header>
+
+      @if (post.cover_image) {
+        <img
+          [src]="post.cover_image"
+          [alt]="post.cover_image_alt || ''"
+          class="article-cover"
+          width="760"
+          height="420"
+          decoding="async"
+        />
+      }
+
+      <div class="prose" [innerHTML]="post.safeBody"></div>
+    </div>
+  </article>
+
+  <section class="section article-cta" aria-labelledby="article-cta-title">
+    <div class="container container--narrow">
+      <h2 id="article-cta-title">Un projet de toiture ?</h2>
+      <p>
+        Nos couvreurs interviennent dans tout le Val-de-Marne. Décrivez-nous votre projet et recevez
+        une estimation gratuite.
+      </p>
+      <div class="article-cta__actions">
+        <a routerLink="/contact" class="btn btn--primary">Demander un devis gratuit</a>
+        <a routerLink="/blog" class="btn btn--ghost">Voir tous les articles</a>
+      </div>
+    </div>
+  </section>
+} @else {
+  <section class="section">
+    <div class="container container--narrow">
+      <h1>Article introuvable</h1>
+      <p>Cet article n’existe pas ou n’est plus publié.</p>
+      <a routerLink="/blog" class="btn btn--primary">Voir tous les articles</a>
+    </div>
+  </section>
+}
+
+<app-faq-section />
+<app-closing-cta />

@@ -1,0 +1,828 @@
+// =====================================================================
+// Shared component classes
+//
+// Anything used on more than one page lives here. Page stylesheets are for
+// composition — a page that restyles a button or a card is a bug.
+// =====================================================================
+
+// --- buttons ---------------------------------------------------------
+//
+// Three variants only: primary (the one action we want), secondary (the
+// alternative), ghost (everything else). Every one clears 44px so it passes
+// WCAG 2.5.8 without a per-page override.
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-height: 48px;
+  padding: var(--s-3) var(--s-6);
+  border: 1px solid transparent;
+  border-radius: var(--r-button);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+
+  &:hover:not(:disabled):not([aria-disabled='true']) {
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled,
+  &[aria-disabled='true'] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  // The trailing arrow slides on hover — the one flourish the CTA carries.
+  .btn__arrow {
+    transition: transform var(--dur) var(--ease);
+  }
+
+  &:hover .btn__arrow {
+    transform: translateX(3px);
+  }
+}
+
+/** The primary action. Blue carries the brand. */
+.btn--primary {
+  background: var(--c-blue);
+  color: var(--c-on-blue);
+  box-shadow: var(--shadow-sm);
+
+  &:hover:not(:disabled) {
+    background: var(--c-blue-dark);
+    color: var(--c-on-blue);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+/**
+ * The green accent action, for the one moment on a page that converts —
+ * the FAQ card's "Demander un devis", the closing CTA. Used sparingly so it
+ * keeps meaning something.
+ *
+ * Filled with --c-green-dark rather than the brand --c-green: white on
+ * #3ab449 is 2.72:1 and fails AA at every size.
+ */
+.btn--accent {
+  background: var(--c-green-dark);
+  color: var(--c-on-green);
+  box-shadow: var(--shadow-sm);
+
+  &:hover:not(:disabled) {
+    background: var(--c-green-darker);
+    color: var(--c-on-green);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+/** Circular arrow badge that leads an accent button in the designs. */
+.btn__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  margin-left: calc(var(--s-2) * -1);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+
+  svg {
+    width: 15px;
+    height: 15px;
+    fill: currentColor;
+  }
+}
+
+.btn--secondary {
+  background: var(--c-white);
+  color: var(--c-ink);
+  border-color: var(--c-border-strong);
+
+  &:hover:not(:disabled) {
+    background: var(--c-surface);
+    border-color: var(--c-ink-subtle);
+    color: var(--c-ink);
+  }
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--c-ink);
+  border-color: transparent;
+
+  &:hover:not(:disabled) {
+    background: var(--c-surface);
+    color: var(--c-ink);
+  }
+}
+
+/** For use on a photograph or a dark band, where the page ink is invisible. */
+.btn--on-dark {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--c-white);
+  border-color: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(6px);
+
+  &:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: var(--c-white);
+    color: var(--c-white);
+  }
+}
+
+.btn--block {
+  width: 100%;
+}
+
+.btn--sm {
+  min-height: 44px;
+  padding: var(--s-2) var(--s-4);
+  font-size: var(--fs-small);
+}
+
+// --- sections --------------------------------------------------------
+
+.section {
+  padding-block: var(--section-y);
+  position: relative;
+}
+
+.section--tight {
+  padding-block: var(--section-y-tight);
+}
+
+.section--surface {
+  background: var(--c-surface);
+}
+
+.section--tint {
+  background: var(--c-green-tint);
+}
+
+/** White through pale blue into pale green, as the FAQ design shows. */
+.section--gradient {
+  background: var(--grad-section);
+}
+
+/**
+ * Dark band. Used sparingly — the previous design put a navy or blue block
+ * behind several sections at once, which is what made the page feel heavy.
+ */
+.section--dark {
+  background: var(--c-navy);
+  color: rgba(255, 255, 255, 0.82);
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--c-white);
+  }
+
+  .section__eyebrow {
+    color: var(--c-green);
+  }
+}
+
+/**
+ * Curved join between two sections, borrowed as a shape idea from FCA.
+ *
+ * A border-radius on an overlapping pseudo-element rather than an SVG: it
+ * scales to any width, costs no request, and cannot desynchronise from the
+ * background colour it is masking.
+ */
+.section--curve-top {
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -1px 0 auto;
+    height: clamp(28px, 4vw, 56px);
+    background: inherit;
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    transform: translateY(-99%);
+    pointer-events: none;
+  }
+}
+
+.section__header {
+  margin-bottom: var(--s-10);
+  max-width: 46rem;
+}
+
+.section__header--centered {
+  margin-inline: auto;
+  text-align: center;
+  // A column, because the outlined pill is an inline-flex child that has to
+  // centre as a block rather than sit in the text flow.
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-3);
+
+  > * {
+    margin-bottom: 0;
+  }
+}
+
+/**
+ * Section label — the thin outlined pill from the designs, which sits under
+ * the heading rather than above it.
+ *
+ * `inline-flex` so the outline hugs the words; a block-level pill would draw
+ * a full-width rounded box.
+ */
+.section__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: var(--s-1) var(--s-5);
+  border: 1px solid var(--c-ink);
+  border-radius: var(--r-pill);
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--c-ink);
+  background: transparent;
+}
+
+/** On a dark band or a photograph the outline has to invert with the text. */
+.section--dark .section__eyebrow,
+.on-dark .section__eyebrow {
+  border-color: rgba(255, 255, 255, 0.5);
+  color: var(--c-white);
+}
+
+.section__lead {
+  font-size: var(--fs-lead);
+  color: var(--c-ink-muted);
+  margin: 0;
+}
+
+.section__header--centered .section__lead {
+  margin-inline: auto;
+}
+
+/** Trailing action under a section's content. */
+.section__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4);
+  justify-content: center;
+  margin-top: var(--s-10);
+}
+
+// --- page hero (interior pages) --------------------------------------
+//
+// Interior pages open on a light band rather than the navy one, so the site
+// no longer reads as a sequence of dark headers.
+
+.page-hero {
+  position: relative;
+  padding-block: var(--s-2) var(--section-y-tight);
+  // Shared gradient behind every internal page title. Light with dark text,
+  // so one treatment serves service, blog, about, contact and legal pages
+  // without each choosing its own.
+  background: var(--grad-page-title), var(--c-white);
+  border-bottom: 1px solid var(--c-border);
+
+  // The trail sits inside the band, so the band supplies the top space and
+  // the trail only needs to clear the heading below it.
+  > .breadcrumb {
+    padding-block: var(--s-3) var(--s-6);
+  }
+
+  &__inner {
+    max-width: 48rem;
+  }
+
+  &__title {
+    // Deliberately below --fs-h1: these banners were running at display size
+    // and dominating the page they introduce.
+    font-size: var(--fs-h2);
+    margin-bottom: var(--s-4);
+  }
+
+  &__lead {
+    font-size: var(--fs-lead);
+    color: var(--c-ink-muted);
+    margin: 0;
+  }
+}
+
+// --- breadcrumbs -----------------------------------------------------
+
+.breadcrumb {
+  // The links carry the vertical space rather than the bar, so each one is a
+  // 44px target while the trail still reads as a slim line.
+  padding-block: 0;
+  font-size: var(--fs-small);
+
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    color: var(--c-ink-muted);
+
+    &:not(:last-child)::after {
+      content: '/';
+      color: var(--c-ink-subtle);
+    }
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--c-ink-muted);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--c-green-dark);
+      text-decoration: underline;
+    }
+  }
+
+  [aria-current='page'] {
+    color: var(--c-ink);
+    font-weight: var(--fw-medium);
+    // A long article or service title would otherwise push the trail into a
+    // horizontal scroll on a narrow screen.
+    max-width: 28ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+// --- prose -----------------------------------------------------------
+// Long-form copy rendered from the database (service, blog, à-propos).
+
+.prose {
+  max-width: 46rem;
+
+  h2 {
+    font-size: var(--fs-h3);
+    margin-top: var(--s-12);
+    margin-bottom: var(--s-4);
+  }
+
+  h3 {
+    font-size: var(--fs-h4);
+    margin-top: var(--s-8);
+    margin-bottom: var(--s-3);
+  }
+
+  h4 {
+    font-size: var(--fs-body);
+    margin-top: var(--s-6);
+    margin-bottom: var(--s-2);
+    color: var(--c-ink-muted);
+  }
+
+  > h2:first-child,
+  > h3:first-child {
+    margin-top: 0;
+  }
+
+  p,
+  li {
+    color: var(--c-ink-muted);
+  }
+
+  ul,
+  ol {
+    padding-left: var(--s-6);
+    margin-bottom: var(--s-5);
+  }
+
+  li {
+    margin-bottom: var(--s-2);
+  }
+
+  li::marker {
+    color: var(--c-blue);
+  }
+
+  strong {
+    color: var(--c-ink);
+    font-weight: var(--fw-semibold);
+  }
+
+  img {
+    border-radius: var(--r-card);
+    margin-block: var(--s-8);
+  }
+
+  /**
+   * The in-article photo row.
+   *
+   * aertoit.fr sets these three side by side across the full container and
+   * in portrait, so both are reproduced. The article itself is set in a
+   * narrow measure, so the row steps outside it: centred on the page rather
+   * than on its own parent, which is what `left: 50%` plus the half-width
+   * translate does. The files are already cropped 3:4, so nothing here is
+   * cropping or stretching them.
+   */
+  .prose-gallery {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(calc(100vw - 2 * var(--gutter)), calc(var(--container) - 2 * var(--gutter)));
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-4);
+    margin-block: var(--s-10);
+
+    figure {
+      margin: 0;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 3 / 4;
+      margin-block: 0;
+    }
+  }
+
+  > *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .prose .prose-gallery {
+    gap: var(--s-3);
+  }
+}
+
+// One column below the point where a third of the width stops showing a
+// roof: at 360px each cell would be under 110px wide.
+@media (max-width: 560px) {
+  .prose .prose-gallery {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-4);
+
+    // One per row, so a portrait crop would fill the screen. Shown as a
+    // landscape window instead; the file is unchanged.
+    img {
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+    }
+  }
+}
+
+// --- cards -----------------------------------------------------------
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-card);
+  padding: var(--s-6);
+  box-shadow: var(--shadow-sm);
+  height: 100%;
+}
+
+/** A card whose whole surface is a link. */
+.card--interactive {
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card--interactive:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--c-border-strong);
+  }
+}
+
+/** Card with a photograph at the top; the image is flush to the edges. */
+.card--media {
+  padding: 0;
+  overflow: hidden;
+
+  > .card__body {
+    padding: var(--s-6);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+}
+
+.card__title {
+  font-size: var(--fs-h4);
+  margin-bottom: var(--s-2);
+}
+
+.card__text {
+  color: var(--c-ink-muted);
+  margin-bottom: var(--s-5);
+  flex: 1;
+}
+
+/** "En savoir plus" affordance. A span inside a card link, not a link. */
+.card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-top: auto;
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-small);
+  color: var(--c-green-dark);
+
+  .card__arrow {
+    transition: transform var(--dur) var(--ease);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card--interactive:hover .card__arrow {
+    transform: translateX(3px);
+  }
+}
+
+// --- grid ------------------------------------------------------------
+
+.grid {
+  display: grid;
+  gap: var(--s-6);
+}
+
+.grid--2 {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+}
+.grid--3 {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17.5rem), 1fr));
+}
+.grid--4 {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+}
+
+/** Strips list semantics without losing them for assistive tech. */
+.list-plain {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+// --- badges / pills ---------------------------------------------------
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-1) var(--s-3);
+  border-radius: var(--r-pill);
+  background: var(--c-green-tint);
+  color: var(--c-green-darker);
+  font-size: var(--fs-tiny);
+  font-weight: var(--fw-semibold);
+}
+
+.badge--neutral {
+  background: var(--c-surface);
+  color: var(--c-ink-muted);
+}
+
+// --- stars ------------------------------------------------------------
+//
+// Rating is conveyed by the accessible name, not by colour alone: the stars
+// are decorative and a visually-hidden sentence carries the value.
+
+.stars {
+  display: inline-flex;
+  gap: 2px;
+  color: #e8a317;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+  }
+}
+
+// --- forms -----------------------------------------------------------
+
+.field {
+  margin-bottom: var(--s-5);
+}
+
+.field__label {
+  display: block;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-medium);
+  margin-bottom: var(--s-2);
+  color: var(--c-ink);
+}
+
+.field__required {
+  color: var(--c-error);
+}
+
+.field__control {
+  width: 100%;
+  min-height: 48px;
+  padding: var(--s-3) var(--s-4);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  color: var(--c-ink);
+  background: var(--c-white);
+  border: 1px solid var(--c-border-strong);
+  border-radius: var(--r-input);
+  transition:
+    border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+
+  &:hover {
+    border-color: var(--c-ink-subtle);
+  }
+
+  &:focus {
+    border-color: var(--c-blue);
+    box-shadow: 0 0 0 3px var(--c-blue-soft);
+    outline: none;
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--c-error);
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(179, 38, 30, 0.15);
+    }
+  }
+}
+
+textarea.field__control {
+  min-height: 9rem;
+  resize: vertical;
+}
+
+.field__error {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-top: var(--s-2);
+  font-size: var(--fs-small);
+  font-weight: var(--fw-medium);
+  color: var(--c-error);
+}
+
+.field__hint {
+  display: block;
+  margin-top: var(--s-2);
+  font-size: var(--fs-small);
+  color: var(--c-ink-muted);
+}
+
+.field--consent {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+
+  // 24px is the WCAG 2.5.8 floor. At 20 the box itself failed, even though
+  // its label is clickable and much larger.
+  input[type='checkbox'] {
+    width: 24px;
+    height: 24px;
+    margin-top: 1px;
+    flex-shrink: 0;
+    accent-color: var(--c-green-dark);
+  }
+
+  label {
+    font-size: var(--fs-small);
+    line-height: 1.5;
+    color: var(--c-ink-muted);
+  }
+}
+
+/** Honeypot — off-screen, hidden from AT, never focusable. */
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+// --- alerts ----------------------------------------------------------
+
+.alert {
+  display: flex;
+  gap: var(--s-3);
+  padding: var(--s-4) var(--s-5);
+  border-radius: var(--r-input);
+  margin-bottom: var(--s-5);
+  font-size: var(--fs-small);
+  border: 1px solid transparent;
+}
+
+.alert--error {
+  background: var(--c-error-bg);
+  border-color: rgba(179, 38, 30, 0.25);
+  color: #8e1d17;
+}
+
+.alert--success {
+  background: var(--c-success-bg);
+  border-color: rgba(27, 94, 32, 0.25);
+  color: var(--c-success);
+}
+
+// --- empty / loading states -------------------------------------------
+//
+// A section with no data gets a compact, deliberate block — never a silent
+// blank area, which is indistinguishable from a rendering bug.
+
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-10) var(--s-6);
+  border: 1px dashed var(--c-border-strong);
+  border-radius: var(--r-card);
+  background: var(--c-surface-soft);
+  text-align: center;
+  color: var(--c-ink-muted);
+
+  p {
+    margin: 0;
+    max-width: 34rem;
+  }
+}
+
+/** Skeleton placeholder that holds a slot while data is in flight. */
+.skeleton {
+  border-radius: var(--r-card);
+  background: linear-gradient(
+    90deg,
+    var(--c-surface) 25%,
+    var(--c-border) 37%,
+    var(--c-surface) 63%
+  );
+  background-size: 400% 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+}
+
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 100% 50%;
+  }
+  to {
+    background-position: 0 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
+
+/**
+ * Quieter title band for pages whose content is dense legal text — the same
+ * gradient at a third of the strength rather than a second definition.
+ */
+.page-hero--subtle {
+  --page-title-tint: 0.35;
+}

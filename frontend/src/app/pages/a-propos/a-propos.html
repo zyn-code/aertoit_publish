@@ -1,0 +1,240 @@
+@let page = page$ | async;
+@let s = settings$ | async;
+
+@if (page) {
+  <article>
+    <!-- The band spans the viewport; the container inside it keeps the
+         measure. Previously `page-hero` and `container` sat on the same
+         element, so the background stopped at the text column. -->
+    <!-- An introductory banner rather than a plain heading band: a real
+         photograph under a scrim, with the trail and the copy over it. -->
+    <header class="about-hero">
+      <div class="about-hero__media" aria-hidden="true">
+        <img
+          [src]="page.hero_image || '/assets/services/couverture.webp'"
+          alt=""
+          width="1920"
+          height="900"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </div>
+      <span class="about-hero__glow" aria-hidden="true"></span>
+
+      <div class="about-hero__content on-dark">
+        <nav class="breadcrumb" aria-label="Fil d’Ariane">
+          <div class="container">
+            <ol>
+              <li><a routerLink="/">Accueil</a></li>
+              <li aria-current="page">À propos</li>
+            </ol>
+          </div>
+        </nav>
+
+        <div class="container">
+          <div class="about-hero__inner">
+            <h1 class="about-hero__title">{{ page.h1 }}</h1>
+            <p class="section__eyebrow">Notre entreprise</p>
+            @if (page.intro) {
+              <p class="about-hero__lead">{{ page.intro }}</p>
+            }
+            <div class="about-hero__actions">
+              <a routerLink="/nos-prestations" class="btn btn--primary">
+                Nos prestations <span class="btn__arrow" aria-hidden="true">→</span>
+              </a>
+              <a routerLink="/contact" class="btn btn--on-dark">Demander un devis</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ------------------------ INTRODUCTION ------------------------ -->
+    <!-- Image beside the copy rather than a column of text on its own. -->
+    <section class="section" aria-labelledby="intro-title">
+      <div class="container split">
+        <div class="split__media" appReveal="left">
+          <img
+            src="/assets/services/travaux-de-charpente.webp"
+            alt="Couvreurs Aertoit au travail sur une charpente"
+            width="760"
+            height="560"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+
+        <div class="split__body" appReveal="right">
+          <h2 id="intro-title" class="split__title">Qui sommes-nous ?</h2>
+          <p class="section__eyebrow">Notre histoire</p>
+          <div class="prose" [innerHTML]="page.body"></div>
+
+          @if (s?.service_area) {
+            <p class="split__area">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path
+                  d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"
+                />
+              </svg>
+              Nous intervenons dans le {{ s?.service_area }}.
+            </p>
+          }
+
+          <a routerLink="/contact" class="btn btn--primary">
+            Demander un devis <span class="btn__arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ------------------------ CERTIFICATIONS ---------------------- -->
+    @let certs = certifications$ | async;
+    @if (certs?.length) {
+      <section class="section section--tight section--surface" aria-labelledby="creds-title">
+        <div class="container">
+          <div class="section__header section__header--centered" appReveal>
+            <h2 id="creds-title">Nos Certifications</h2>
+            <p class="section__eyebrow">Nos Garanties</p>
+          </div>
+          <ul class="creds list-plain">
+            @for (cert of certs; track cert.id; let i = $index) {
+              <li class="cred" appReveal [revealOrder]="i">
+                @if (cert.logo) {
+                  <img
+                    [src]="cert.logo"
+                    [alt]="cert.logo_alt"
+                    width="56"
+                    height="56"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                }
+                <span>{{ cert.name }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      </section>
+    }
+
+    <!-- --------------------------- VALEURS -------------------------- -->
+    @let valeurs = valeurs$ | async;
+    @if (valeurs?.length) {
+      <section class="section" aria-labelledby="valeurs-title">
+        <div class="container">
+          <div class="section__header section__header--centered" appReveal>
+            <h2 id="valeurs-title">Notre Approche</h2>
+            <p class="section__eyebrow">Nos Valeurs</p>
+          </div>
+
+          <ul class="grid grid--3 list-plain">
+            @for (v of valeurs; track v.id; let i = $index) {
+              <li class="value-card" appReveal [revealOrder]="i">
+                <span class="value-card__icon" aria-hidden="true">
+                  @switch (v.icon) {
+                    @case ('ear') {
+                      <svg viewBox="0 0 24 24" focusable="false">
+                        <path
+                          d="M12 2a7 7 0 0 0-7 7h3a4 4 0 1 1 6.9 2.8c-1.3 1.4-2.4 2.3-2.9 3.6a6 6 0 0 0-.4 2.1h3c0-.5.1-.9.3-1.3.4-.9 1.3-1.6 2.4-2.8A7 7 0 0 0 12 2Zm-1 17h3v3h-3z"
+                        />
+                      </svg>
+                    }
+                    @case ('star') {
+                      <svg viewBox="0 0 24 24" focusable="false">
+                        <path
+                          d="M12 17.3 6.2 20.6l1.5-6.6L2.6 9.5l6.7-.6L12 2.7l2.7 6.2 6.7.6-5.1 4.5 1.5 6.6Z"
+                        />
+                      </svg>
+                    }
+                    @default {
+                      <svg viewBox="0 0 24 24" focusable="false">
+                        <path
+                          d="M12 21s-7.5-4.7-9.3-9A5.4 5.4 0 0 1 12 6.6 5.4 5.4 0 0 1 21.3 12C19.5 16.3 12 21 12 21Z"
+                        />
+                      </svg>
+                    }
+                  }
+                </span>
+                <h3 class="value-card__title">{{ v.title }}</h3>
+                <p class="value-card__text">{{ v.text }}</p>
+              </li>
+            }
+          </ul>
+        </div>
+      </section>
+    }
+
+    <!-- --------------------------- ÉQUIPE --------------------------- -->
+    @let equipe = equipe$ | async;
+    @if (equipe?.length) {
+      <section class="section section--gradient" aria-labelledby="equipe-title">
+        <div class="container">
+          <div class="section__header section__header--centered" appReveal>
+            <h2 id="equipe-title">Rencontrez Nos Experts</h2>
+            <p class="section__eyebrow">Notre Équipe</p>
+          </div>
+
+          <ul class="grid grid--3 list-plain">
+            @for (member of equipe; track member.id; let i = $index) {
+              <li class="team-card" appReveal [revealOrder]="i">
+                <span class="team-card__badge" aria-hidden="true">{{
+                  member.title.charAt(0)
+                }}</span>
+                <span class="team-card__id">
+                  <h3 class="team-card__name">{{ member.title }}</h3>
+                  <p class="team-card__role">{{ member.text }}</p>
+                </span>
+              </li>
+            }
+          </ul>
+        </div>
+      </section>
+    }
+
+    <!-- ------------------------- RECRUTEMENT ------------------------ -->
+    <!-- Keeps the id the header's Recrutement link and the footer target. -->
+    @let careers = careers$ | async;
+    @if (careers?.length) {
+      <section class="section section--surface" id="recrutement" aria-labelledby="careers-title">
+        <div class="container">
+          <div class="section__header section__header--centered" appReveal>
+            <h2 id="careers-title">Vous Souhaitez Nous Rejoindre ?</h2>
+            <p class="section__eyebrow">Recrutement</p>
+            <p class="section__lead">
+              Aertoit Couverture recrute des talents ! Découvrez les offres d’emploi disponibles et
+              postulez dès maintenant.
+            </p>
+          </div>
+
+          <ul class="grid careers-list list-plain">
+            @for (job of careers; track job.slug; let i = $index) {
+              <li appReveal [revealOrder]="i">
+                <a [routerLink]="['/carriere', job.slug]" class="career-card">
+                  <h3 class="career-card__title">{{ job.title }}</h3>
+                  <p class="career-card__meta">{{ job.contract_type }} · {{ job.location }}</p>
+                  <p class="career-card__summary">{{ job.summary }}</p>
+                  <span class="career-card__cta">
+                    Voir l’offre
+                    <span class="card__arrow" aria-hidden="true">→</span>
+                  </span>
+                </a>
+              </li>
+            }
+          </ul>
+        </div>
+      </section>
+    }
+  </article>
+} @else {
+  <section class="section">
+    <div class="container container--narrow">
+      <h1>Page introuvable</h1>
+      <p>Cette page n’est pas disponible pour le moment.</p>
+      <a routerLink="/" class="btn btn--primary">Retour à l’accueil</a>
+    </div>
+  </section>
+}
+
+<app-why-choose-us />
+<app-faq-section />
+<app-closing-cta />

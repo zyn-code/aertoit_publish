@@ -1,0 +1,249 @@
+@let settings = settings$ | async;
+
+<!-- ============================ HERO ============================ -->
+<!-- Image-led rather than texture-led: a real roof photograph under a
+     directional scrim, with the copy on the readable side. The old hero laid
+     white text straight over the tiled navy graphic that the header also
+     used, so the two merged into one dark block. -->
+<section class="hero">
+  <div class="hero__media">
+    @let heroSlide = heroSlides$ | async;
+    <img
+      [src]="(heroSlide && heroSlide[0]?.image) || '/assets/services/couverture.webp'"
+      alt=""
+      width="1920"
+      height="1080"
+      fetchpriority="high"
+      decoding="async"
+    />
+  </div>
+  <div class="hero__scrim" aria-hidden="true"></div>
+
+  <div class="container hero__inner">
+    <div class="hero__content">
+      <p class="hero__eyebrow">Couvreur dans le Val-de-Marne</p>
+      <!-- Exactly one H1 per page. -->
+      <h1 class="hero__title">Travaux de toiture par des couvreurs experts</h1>
+      <p class="hero__lead">
+        L’assurance d’une équipe de professionnels en qui vous pouvez avoir confiance, pour la
+        couverture, la charpente, l’isolation et l’entretien de votre toiture.
+      </p>
+
+      <div class="hero__actions">
+        <a routerLink="/contact" class="btn btn--primary">
+          Demander un devis <span class="btn__arrow" aria-hidden="true">→</span>
+        </a>
+        @if (settings) {
+          <a [href]="'tel:' + settings.phone_e164" class="btn btn--on-dark">
+            {{ settings.phone_display }}
+          </a>
+        }
+      </div>
+
+      <!-- Certifications, not counts: these are verifiable credentials that
+           Aertoit holds, where the previous rating and client-count claims
+           had no source in the supplied content. -->
+      <ul class="hero__proof list-plain">
+        @for (cert of certifications$ | async; track cert.id) {
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="m9.6 16.6-4.2-4.2 1.4-1.4 2.8 2.8 7.6-7.6 1.4 1.4-9 9Z" />
+            </svg>
+            {{ cert.name }}
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== HERO SERVICE LINKS ===================== -->
+<!-- Straddles the foot of the hero: roughly the top 45% of the block sits
+     over the photograph, the rest over the white page beneath, tying the
+     two together. A sibling of the hero rather than a child, so the hero's
+     own `overflow: hidden` cannot clip it. -->
+@let heroServices = services$ | async;
+<div class="hero-links">
+  <div class="container">
+    @if (heroServices?.length) {
+      <app-service-links [services]="heroServices ?? []" />
+    }
+  </div>
+</div>
+
+<!-- ========================== SERVICES ========================== -->
+<section class="section section--after-hero-links" aria-labelledby="services-title">
+  <div class="container">
+    <div class="section__header section__header--centered" appReveal>
+      <h2 id="services-title">Découvrez Nos Prestations</h2>
+      <p class="section__eyebrow">Nos Services</p>
+      <p class="section__lead">
+        De la couverture à l’isolation, nos équipes interviennent sur l’ensemble de votre toiture,
+        en neuf comme en rénovation.
+      </p>
+    </div>
+
+    <!-- Each main service is a large photographic card carrying a preview
+         of its own sub-services. Flattening all seventeen service pages into
+         one grid would bury the six categories a visitor actually chooses
+         between. -->
+    @let services = services$ | async;
+    @if (services === null) {
+      <ul class="grid grid--2 list-plain" aria-hidden="true">
+        @for (n of [1, 2]; track n) {
+          <li class="skeleton service-skeleton"></li>
+        }
+      </ul>
+    } @else if (services.length) {
+      <app-service-showcase [services]="services" />
+
+      <div class="section__actions">
+        <a routerLink="/nos-prestations" class="btn btn--primary">
+          Voir toutes les prestations <span class="btn__arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    } @else {
+      <p class="state">
+        Nos prestations sont momentanément indisponibles.
+        <a routerLink="/contact">Contactez-nous</a> et nous vous renseignerons directement.
+      </p>
+    }
+  </div>
+</section>
+
+<!-- ====================== CERTIFICATIONS ======================= -->
+<section class="section section--surface" aria-labelledby="certifications-title">
+  <div class="container">
+    @let savoir = savoirFaire$ | async;
+    <div class="cert-band">
+      <div class="cert-band__intro" appReveal>
+        <h2 id="certifications-title">
+          @if (savoir) {
+            {{ savoir.h1 }}
+          } @else {
+            Savoir-faire français
+          }
+        </h2>
+        <p class="section__eyebrow">Les Plus d’AERTOIT</p>
+        @if (savoir?.intro) {
+          <p class="section__lead">{{ savoir?.intro }}</p>
+        }
+      </div>
+
+      <ul class="cert-band__list list-plain">
+        @for (cert of certifications$ | async; track cert.id; let i = $index) {
+          <li class="cert" appReveal [revealOrder]="i">
+            @if (cert.logo) {
+              <img
+                [src]="cert.logo"
+                [alt]="cert.logo_alt"
+                class="cert__logo"
+                width="72"
+                height="72"
+                loading="lazy"
+                decoding="async"
+              />
+            } @else {
+              <!-- No official artwork supplied for this credential. A generic
+                   badge keeps the row consistent; it is deliberately not a
+                   facsimile of the partner's mark. -->
+              <span class="cert__badge" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path
+                    d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm-1 14-3.5-3.5 1.4-1.4L11 13.2l4.1-4.1 1.4 1.4L11 16Z"
+                  />
+                </svg>
+              </span>
+            }
+            <h3 class="cert__name">{{ cert.name }}</h3>
+            <p class="cert__desc">{{ cert.description }}</p>
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ========================== PROCESS =========================== -->
+<!-- Numbered sequence joined by a progress line, rather than three large
+     white cards floating on a solid blue band. -->
+<section class="section" aria-labelledby="process-title">
+  <div class="container">
+    <div class="section__header section__header--centered" appReveal>
+      <h2 id="process-title">Planifiez votre rendez-vous d’estimation en 3 étapes</h2>
+      <p class="section__eyebrow">Comment ça marche</p>
+    </div>
+
+    <ol class="steps list-plain">
+      @for (step of processSteps; track step.number; let i = $index) {
+        <li class="step" appReveal [revealOrder]="i">
+          <span class="step__marker" aria-hidden="true">
+            <span class="step__number">{{ step.number }}</span>
+          </span>
+          <div class="step__body">
+            <h3 class="step__title">{{ step.title }}</h3>
+            <p class="step__text">{{ step.text }}</p>
+          </div>
+        </li>
+      }
+    </ol>
+
+    <div class="section__actions">
+      <a routerLink="/contact" class="btn btn--primary">Prendre un rendez-vous</a>
+      @if (settings?.callback_promise) {
+        <p class="steps__promise">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path
+              d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm1 10.6-3.5 2.1-.8-1.3 2.8-1.7V6h1.5Z"
+            />
+          </svg>
+          {{ settings?.callback_promise }}
+        </p>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ======================== TESTIMONIALS ======================== -->
+<section
+  class="section section--tight reviews-band"
+  id="avis-clients"
+  aria-labelledby="testimonials-title"
+>
+  <div class="container">
+    <div class="section__header section__header--centered" appReveal>
+      <h2 id="testimonials-title">Nos Clients en Parlent le Mieux</h2>
+      <p class="section__eyebrow">Avis Google</p>
+    </div>
+
+    @let testimonials = testimonials$ | async;
+    @if (testimonials?.length) {
+      <app-reviews-carousel [reviews]="testimonials ?? []" />
+    } @else {
+      <p class="state">Les avis de nos clients seront affichés ici prochainement.</p>
+    }
+  </div>
+</section>
+
+<!-- ============================ FAQ ============================= -->
+<app-faq-section />
+
+<!-- ============================ BLOG ============================ -->
+@let posts = posts$ | async;
+@if (posts?.items?.length) {
+  <section class="section" aria-labelledby="blog-title">
+    <div class="container">
+      <div class="section__header section__header--centered" appReveal>
+        <!-- Sentence case: French does not capitalise every word. -->
+        <h2 id="blog-title">Nos conseils pour une meilleure toiture</h2>
+        <p class="section__eyebrow">Le Blog</p>
+      </div>
+
+      <app-blog-mosaic [posts]="posts?.items ?? []" />
+
+      <div class="section__actions">
+        <a routerLink="/blog" class="btn btn--secondary">Voir tous les articles</a>
+      </div>
+    </div>
+  </section>
+}

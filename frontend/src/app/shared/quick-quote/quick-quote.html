@@ -1,0 +1,129 @@
+@let settings = settings$ | async;
+
+<section class="section quick-quote" aria-labelledby="quick-quote-title">
+  <div class="container container--narrow" appReveal>
+    <div class="quick-quote__panel">
+      @if (succeeded()) {
+        <div class="alert alert--success" role="status">
+          <strong>Votre demande a bien été envoyée.</strong>
+          <p>Nous vous rappelons dans les plus brefs délais.</p>
+        </div>
+      } @else {
+        <h2 id="quick-quote-title">Demande de Devis Rapide</h2>
+        <p class="quick-quote__lead">
+          Laissez-nous votre numéro : nous vous rappelons pour faire le point sur votre projet.
+        </p>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="quick-quote__form">
+          @if (formError()) {
+            <p class="alert alert--error" role="alert">{{ formError() }}</p>
+          }
+
+          <div class="field">
+            <label class="field__label" for="qq-service">
+              Service souhaité <span class="field__required" aria-hidden="true">*</span>
+            </label>
+            <select
+              id="qq-service"
+              formControlName="serviceSlug"
+              class="field__control"
+              required
+              [attr.aria-invalid]="showError('serviceSlug')"
+            >
+              <option value="">Sélectionnez le service souhaité</option>
+              @for (service of services$ | async; track service.slug) {
+                <option [value]="service.slug">{{ service.name }}</option>
+                @for (child of service.children ?? []; track child.slug) {
+                  <option [value]="child.slug">&nbsp;&nbsp;— {{ child.name }}</option>
+                }
+              }
+            </select>
+            @if (showError('serviceSlug')) {
+              <span class="field__error">Veuillez sélectionner un service.</span>
+            }
+          </div>
+
+          <div class="quick-quote__row">
+            <div class="field">
+              <label class="field__label" for="qq-name">
+                Nom complet <span class="field__required" aria-hidden="true">*</span>
+              </label>
+              <input
+                id="qq-name"
+                type="text"
+                formControlName="fullName"
+                class="field__control"
+                autocomplete="name"
+                required
+                [attr.aria-invalid]="showError('fullName')"
+              />
+              @if (showError('fullName')) {
+                <span class="field__error">Veuillez saisir votre nom complet.</span>
+              }
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="qq-phone">
+                Téléphone <span class="field__required" aria-hidden="true">*</span>
+              </label>
+              <input
+                id="qq-phone"
+                type="tel"
+                formControlName="phone"
+                class="field__control"
+                autocomplete="tel"
+                placeholder="01 46 63 99 59"
+                required
+                [attr.aria-invalid]="showError('phone')"
+              />
+              @if (showError('phone')) {
+                <span class="field__error">Veuillez saisir un numéro valide.</span>
+              }
+            </div>
+          </div>
+
+          <!-- Honeypot: hidden from users and from assistive tech. -->
+          <div class="honeypot" aria-hidden="true">
+            <label for="qq-website">Ne pas remplir</label>
+            <input
+              id="qq-website"
+              type="text"
+              formControlName="website"
+              tabindex="-1"
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="field field--consent">
+            <input
+              id="qq-consent"
+              type="checkbox"
+              formControlName="consentGiven"
+              required
+              [attr.aria-invalid]="showError('consentGiven')"
+            />
+            <label for="qq-consent">
+              J’accepte que mes données soient utilisées pour me recontacter, conformément à la
+              <a routerLink="/politique-de-confidentialite">politique de confidentialité</a>.
+              <span class="field__required" aria-hidden="true">*</span>
+            </label>
+          </div>
+          @if (showError('consentGiven')) {
+            <span class="field__error">Vous devez accepter la politique de confidentialité.</span>
+          }
+
+          <div class="quick-quote__actions">
+            <button type="submit" class="btn btn--primary" [disabled]="submitting()">
+              {{ submitting() ? 'Envoi en cours…' : 'Je souhaite être rappelé(e)' }}
+            </button>
+            @if (settings) {
+              <a [href]="'tel:' + settings.phone_e164" class="btn btn--ghost">
+                Besoin d’un conseil ? Appelez-nous dès maintenant !
+              </a>
+            }
+          </div>
+        </form>
+      }
+    </div>
+  </div>
+</section>

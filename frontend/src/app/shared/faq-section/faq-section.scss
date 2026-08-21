@@ -1,0 +1,136 @@
+// =====================================================================
+// FAQ band
+//
+// Two columns over a wash that runs white → pale blue → pale green, with a
+// soft blue glow low-left and a green one high-right.
+// =====================================================================
+
+.faq-band {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--grad-section);
+
+  &__glow {
+    position: absolute;
+    z-index: -1;
+    width: min(46rem, 70%);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    pointer-events: none;
+    // Kept off the text: the blur is what makes these read as light rather
+    // than as coloured circles.
+    filter: blur(10px);
+
+    &--blue {
+      left: -14%;
+      bottom: -28%;
+      background: radial-gradient(circle, rgba(74, 142, 212, 0.38) 0%, transparent 68%);
+    }
+
+    &--green {
+      right: -12%;
+      top: -30%;
+      background: radial-gradient(circle, rgba(79, 180, 105, 0.34) 0%, transparent 68%);
+    }
+  }
+
+  &__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: var(--s-12);
+    align-items: start;
+  }
+
+  &__intro {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--s-5);
+  }
+
+  &__title {
+    margin: 0;
+    font-size: var(--fs-h1);
+    line-height: var(--lh-heading);
+    text-wrap: balance;
+  }
+}
+
+// --- CTA card ----------------------------------------------------------
+
+.faq-cta {
+  width: 100%;
+  margin-top: var(--s-6);
+  padding: var(--s-7);
+  border-radius: var(--r-card-lg);
+  // Translucent over the wash, as the design shows, with a light edge so it
+  // still has a shape where the backdrop is at its palest.
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-sm);
+
+  &__title {
+    margin: 0 0 var(--s-3);
+    font-size: var(--fs-h3);
+    color: var(--c-blue-deep);
+  }
+
+  &__text {
+    margin: 0 0 var(--s-6);
+    color: var(--c-ink-muted);
+    font-size: var(--fs-small);
+    line-height: var(--lh-body);
+  }
+}
+
+// --- responsive ---------------------------------------------------------
+
+@media (max-width: 900px) {
+  .faq-band__inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-8);
+  }
+
+  // The card follows the accordion on a narrow screen: the question list is
+  // what the reader came for, and a CTA above it pushes it off the fold.
+  .faq-band__intro {
+    display: contents;
+  }
+
+  .faq-band__inner > .faq-band__intro > .section__eyebrow {
+    order: 1;
+  }
+  .faq-band__title {
+    order: 2;
+    margin-bottom: var(--s-2);
+  }
+  .faq-band__list {
+    order: 3;
+  }
+  .faq-cta {
+    order: 4;
+    margin-top: 0;
+  }
+
+  .faq-band__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .section__eyebrow {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 560px) {
+  .faq-cta {
+    padding: var(--s-5);
+
+    .btn {
+      width: 100%;
+    }
+  }
+}

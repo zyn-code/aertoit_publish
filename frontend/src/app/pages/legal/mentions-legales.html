@@ -1,0 +1,144 @@
+@let s = settings$ | async;
+
+<article class="section legal">
+  <div class="container container--narrow">
+    <h1>Mentions légales</h1>
+
+    <section aria-labelledby="editeur">
+      <h2 id="editeur">Éditeur du site</h2>
+      <dl class="legal__dl">
+        <dt>Dénomination sociale</dt>
+        <dd>{{ s?.legal_name || s?.company_name }}</dd>
+
+        <dt>Siège social</dt>
+        <dd>
+          <address>
+            {{ s?.address_street }}<br />
+            {{ s?.address_postal }} {{ s?.address_locality }}, France
+          </address>
+        </dd>
+
+        <dt>Téléphone</dt>
+        <dd>
+          @if (s) {
+            <a [href]="'tel:' + s.phone_e164">{{ s.phone_display }}</a>
+          }
+        </dd>
+
+        <dt>Adresse e-mail</dt>
+        <dd>
+          @if (s) {
+            <a [href]="'mailto:' + s.contact_email">{{ s.contact_email }}</a>
+          }
+        </dd>
+
+        <dt>Numéro SIRET</dt>
+        <dd>
+          @if (s?.legal_siret) {
+            {{ s?.legal_siret }}
+          } @else {
+            <mark class="legal__todo">À compléter — requis par la LCEN</mark>
+          }
+        </dd>
+
+        <dt>RCS</dt>
+        <dd>
+          @if (s?.legal_rcs) {
+            {{ s?.legal_rcs }}
+          } @else {
+            <mark class="legal__todo">À compléter — requis par la LCEN</mark>
+          }
+        </dd>
+
+        <dt>Capital social</dt>
+        <dd>
+          @if (s?.legal_capital) {
+            {{ s?.legal_capital }}
+          } @else {
+            <mark class="legal__todo">À compléter — requis par la LCEN</mark>
+          }
+        </dd>
+
+        <dt>Numéro de TVA intracommunautaire</dt>
+        <dd>
+          @if (s?.legal_vat) {
+            {{ s?.legal_vat }}
+          } @else {
+            <mark class="legal__todo">À compléter</mark>
+          }
+        </dd>
+
+        <dt>Directeur de la publication</dt>
+        <dd>
+          @if (s?.legal_director) {
+            {{ s?.legal_director }}
+          } @else {
+            <mark class="legal__todo">À compléter — requis par la LCEN</mark>
+          }
+        </dd>
+      </dl>
+    </section>
+
+    <section aria-labelledby="hebergeur">
+      <h2 id="hebergeur">Hébergeur</h2>
+      @if (s?.host_name) {
+        <p>
+          {{ s?.host_name }}<br />
+          {{ s?.host_address }}
+        </p>
+      } @else {
+        <p><mark class="legal__todo">À compléter — nom et adresse de l’hébergeur</mark></p>
+      }
+    </section>
+
+    <section aria-labelledby="assurance">
+      <h2 id="assurance">Assurance professionnelle</h2>
+      <p>
+        Aertoit Couverture est couverte par une garantie décennale conformément aux articles 1792 et
+        suivants du Code civil.
+      </p>
+      @if (s?.legal_insurer) {
+        <p>Assureur : {{ s?.legal_insurer }}</p>
+      } @else {
+        <p>
+          <mark class="legal__todo">
+            À compléter — assureur, numéro de contrat et couverture géographique
+          </mark>
+        </p>
+      }
+    </section>
+
+    <section aria-labelledby="propriete">
+      <h2 id="propriete">Propriété intellectuelle</h2>
+      <p>
+        L’ensemble des contenus de ce site — textes, photographies, illustrations, logos et éléments
+        graphiques — est la propriété d’Aertoit Couverture ou de ses partenaires, sauf mention
+        contraire. Toute reproduction, représentation ou diffusion, totale ou partielle, sans
+        autorisation écrite préalable, est interdite et constituerait une contrefaçon au sens des
+        articles L.335-2 et suivants du Code de la propriété intellectuelle.
+      </p>
+      <p>
+        Les marques et logos de nos partenaires et organismes certificateurs, notamment VELUX,
+        QUALIBAT et Éco Artisan, demeurent la propriété de leurs titulaires respectifs.
+      </p>
+    </section>
+
+    <section aria-labelledby="donnees">
+      <h2 id="donnees">Données personnelles</h2>
+      <p>
+        Le traitement des données collectées via ce site est décrit dans notre
+        <a routerLink="/politique-de-confidentialite">politique de confidentialité</a>.
+      </p>
+    </section>
+
+    <section aria-labelledby="responsabilite">
+      <h2 id="responsabilite">Limitation de responsabilité</h2>
+      <p>
+        Aertoit Couverture s’efforce d’assurer l’exactitude des informations publiées sur ce site.
+        Les informations à caractère technique y sont fournies à titre indicatif et ne sauraient se
+        substituer à une étude réalisée sur place par l’un de nos techniciens. Seul le devis établi
+        après visite engage l’entreprise.
+      </p>
+    </section>
+  </div>
+</article>

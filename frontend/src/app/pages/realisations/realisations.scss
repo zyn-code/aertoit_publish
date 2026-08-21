@@ -1,0 +1,140 @@
+.project-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.project {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+
+  &__image {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  &__body {
+    padding: var(--s-6);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  &__tag {
+    align-self: flex-start;
+    padding: var(--s-1) var(--s-3);
+    margin-bottom: var(--s-3);
+    border-radius: var(--r-pill);
+    background: var(--c-blue-tint);
+    color: var(--c-blue);
+    font-size: var(--fs-small);
+    font-weight: var(--fw-medium);
+  }
+
+  &__title {
+    font-size: var(--fs-h4);
+    margin-bottom: var(--s-2);
+  }
+
+  &__meta {
+    display: flex;
+    gap: var(--s-2);
+    font-size: var(--fs-small);
+    color: var(--c-ink-muted);
+    margin-bottom: var(--s-3);
+  }
+
+  &__summary {
+    color: var(--c-ink-muted);
+    margin: 0;
+    flex: 1;
+  }
+}
+
+.empty-state {
+  max-width: 46rem;
+  padding: var(--s-10);
+  background: var(--c-surface);
+  border-radius: var(--r-card);
+  text-align: center;
+  margin-inline: auto;
+
+  &__title {
+    font-size: var(--fs-h3);
+    margin-bottom: var(--s-4);
+  }
+
+  p {
+    color: var(--c-ink-muted);
+    margin-bottom: var(--s-6);
+  }
+}
+
+// --- project detail ---------------------------------------------------
+
+.project-detail {
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-4);
+    margin-bottom: var(--s-8);
+    font-size: var(--fs-small);
+    color: var(--c-ink-muted);
+  }
+
+  &__summary {
+    font-size: 1.125rem;
+    color: var(--c-ink-muted);
+    margin-bottom: var(--s-10);
+  }
+}
+
+/** Before/after pair. Stacks on mobile so neither image is cropped small. */
+.compare {
+  display: grid;
+  gap: var(--s-5);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  margin-bottom: var(--s-10);
+
+  figure {
+    margin: 0;
+  }
+
+  img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--r-card);
+  }
+
+  figcaption {
+    margin-top: var(--s-2);
+    font-size: var(--fs-small);
+    font-weight: var(--fw-semibold);
+    color: var(--c-ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+}
+
+.gallery {
+  display: grid;
+  gap: var(--s-4);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  list-style: none;
+  margin: 0 0 var(--s-10);
+  padding: 0;
+
+  img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: var(--r-input);
+  }
+}

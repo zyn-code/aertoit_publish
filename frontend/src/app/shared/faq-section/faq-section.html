@@ -1,0 +1,41 @@
+@let faqs = faqs$ | async;
+@if (faqs?.length) {
+  <section class="section faq-band" aria-labelledby="faq-section-title">
+    <!-- Two soft radial glows, blue low-left and green high-right, as the
+         design shows. Decorative and behind the content, so they can never
+         sit between the reader and the copy. -->
+    <span class="faq-band__glow faq-band__glow--blue" aria-hidden="true"></span>
+    <span class="faq-band__glow faq-band__glow--green" aria-hidden="true"></span>
+
+    <div class="container faq-band__inner">
+      <div class="faq-band__intro" appReveal>
+        <p class="section__eyebrow">Questions / Réponses</p>
+        <h2 id="faq-section-title" class="faq-band__title">
+          Des réponses claires avant de commencer vos travaux
+        </h2>
+
+        <!-- Real action for a roofing company: the estimate visit the site
+             already offers, on the route that already exists. -->
+        <div class="faq-cta">
+          <h3 class="faq-cta__title">Encore des questions ?</h3>
+          <p class="faq-cta__text">
+            Besoin d’en savoir plus avant de vous lancer ? Nos couvreurs répondent à vos questions
+            et se déplacent chez vous pour une estimation gratuite.
+          </p>
+          <a routerLink="/contact" class="btn btn--accent">
+            <span class="btn__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <path d="M5 12h12.2l-4.6-4.6L14 6l7 7-7 7-1.4-1.4 4.6-4.6H5z" />
+              </svg>
+            </span>
+            Demander un devis gratuit
+          </a>
+        </div>
+      </div>
+
+      <div class="faq-band__list" appReveal="fade">
+        <app-faq-accordion [faqs]="faqs ?? []" />
+      </div>
+    </div>
+  </section>
+}

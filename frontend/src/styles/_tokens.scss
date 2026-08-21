@@ -1,0 +1,195 @@
+// =====================================================================
+// Design tokens
+//
+// Blue-primary AERTOIT system, per the approved designs: a white and very
+// light neutral canvas, blue carrying the brand and the structure, green as
+// a controlled accent for action and confirmation, and soft blue-to-green
+// gradients on the card surfaces that the mockups call for.
+//
+// Everything below is a token. Pages and components must not hard-code a
+// colour, radius, shadow, gradient or spacing step; if something is missing
+// here, add it here.
+// =====================================================================
+
+:root {
+  /* --- brand: blue is primary -------------------------------------- */
+  --c-blue: #0a5bb0; // primary — buttons, links, structure
+  --c-blue-dark: #07427f;
+  --c-blue-deep: #0b223f; // deepest shade, footer and dark bands
+  --c-blue-mid: #4a8ed4;
+  --c-blue-soft: #bed6f2;
+  --c-blue-tint: #e9f1fb;
+  --c-blue-wash: #f4f8fd;
+
+  // Kept as an alias so the deep navy reads by intent, not by hex.
+  --c-navy: var(--c-blue-deep);
+  --c-navy-soft: #14304f;
+
+  /* --- accent: green ------------------------------------------------ */
+  // Aertoit's green. Identity colour, used on surfaces that carry no text.
+  --c-green: #3ab449;
+
+  // The text-safe green. White on #3ab449 measures 2.72:1 and fails WCAG AA
+  // at every size; on #1e7a2c it measures 5.94:1 and passes. Every filled
+  // green control uses this one, so the accent reads the same and the
+  // contrast is sound.
+  --c-green-dark: #1e7a2c;
+  --c-green-darker: #17601f;
+  --c-green-mid: #4fb469;
+  --c-green-soft: #bfe6c9;
+  --c-green-tint: #eaf7ec;
+  --c-green-tint-strong: #d3edd8;
+
+  /* --- gradients ---------------------------------------------------- */
+  //
+  // The review cards in the designs run white at the top into colour at the
+  // bottom. The end stops are deliberately deep enough that white text on
+  // the lower third still clears 4.5:1 — a lighter, prettier stop would put
+  // the Google wordmark and the star row below AA.
+  --grad-card-blue: linear-gradient(180deg, #ffffff 0%, #ffffff 38%, #dfebf9 66%, #4a86c4 100%);
+  --grad-card-green: linear-gradient(180deg, #ffffff 0%, #ffffff 38%, #e2f2e6 66%, #4e9d62 100%);
+
+  /**
+   * Shared treatment behind an internal page title.
+   *
+   * Light with dark text, so the same band works on every page without a
+   * per-page colour decision. `--page-title-tint` scales the brand influence
+   * so a legal page can be quieter than a service page without a second
+   * gradient definition.
+   */
+  --page-title-tint: 1;
+  --grad-page-title: linear-gradient(
+    120deg,
+    rgba(10, 91, 176, calc(0.14 * var(--page-title-tint))) 0%,
+    rgba(74, 142, 212, calc(0.08 * var(--page-title-tint))) 45%,
+    rgba(79, 180, 105, calc(0.1 * var(--page-title-tint))) 100%
+  );
+
+  /** Page-level wash: white through pale blue into pale green. */
+  --grad-section: linear-gradient(
+    135deg,
+    var(--c-blue-tint) 0%,
+    #f7fbf8 45%,
+    var(--c-green-tint) 100%
+  );
+
+  /** Translucent overlay for a featured article tile. */
+  --grad-overlay-blue: linear-gradient(
+    160deg,
+    rgba(10, 91, 176, 0.92) 0%,
+    rgba(7, 66, 127, 0.78) 100%
+  );
+  --grad-overlay-green: linear-gradient(
+    160deg,
+    rgba(30, 122, 44, 0.9) 0%,
+    rgba(23, 96, 31, 0.76) 100%
+  );
+
+  /* --- neutrals ---------------------------------------------------- */
+  // Very slightly warm, so large white areas do not read as clinical.
+  --c-ink: #12181f;
+  --c-ink-muted: #55606d;
+  --c-ink-subtle: #78828f;
+  --c-surface: #f6f7f9;
+  --c-surface-soft: #fbfbfc;
+  --c-border: #e6e9ed;
+  --c-border-strong: #d3d8de;
+  --c-white: #ffffff;
+
+  /* --- semantic ---------------------------------------------------- */
+  --c-error: #b3261e;
+  --c-error-bg: #fdecea;
+  --c-success: #1b5e20;
+  --c-success-bg: #e8f5e9;
+  // Focus ring. Deliberately none of the other three: blue is the primary so
+  // a blue ring vanishes on every blue button, green is the accent, and red
+  // already means error. Amber is the only slot left that reads as "focus".
+  --c-focus: #b45309;
+
+  /** Label colour on a filled brand control. */
+  --c-on-green: var(--c-white);
+  --c-on-blue: var(--c-white);
+
+  /* --- typography -------------------------------------------------- */
+  --font-heading: 'Satoshi', 'Satoshi Fallback', system-ui, sans-serif;
+  --font-body: 'Inter', 'Inter Fallback', system-ui, sans-serif;
+
+  // Fluid from 360px to 1280px. The lower bound is the readable mobile size,
+  // not a shrunken desktop one — the previous scale started h1 at 32px on a
+  // 360px screen, which forced mid-word breaks.
+  --fs-display: clamp(2rem, 1.35rem + 2.9vw, 3.5rem); // 32 -> 56
+  --fs-h1: clamp(1.75rem, 1.3rem + 2vw, 2.75rem); // 28 -> 44
+  --fs-h2: clamp(1.5rem, 1.24rem + 1.15vw, 2.125rem); // 24 -> 34
+  --fs-h3: clamp(1.25rem, 1.13rem + 0.53vw, 1.5rem); // 20 -> 24
+  --fs-h4: clamp(1.0625rem, 1.01rem + 0.24vw, 1.1875rem); // 17 -> 19
+  --fs-lead: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem); // 17 -> 20
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-tiny: 0.8125rem;
+
+  --lh-tight: 1.12;
+  --lh-heading: 1.22;
+  --lh-body: 1.65;
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  --tracking-tight: -0.02em; // headings only; body stays at 0
+  --tracking-eyebrow: 0.1em;
+
+  /* --- spacing (4px base) ------------------------------------------ */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.25rem;
+  --s-6: 1.5rem;
+  --s-7: 1.75rem;
+  --s-8: 2rem;
+  --s-10: 2.5rem;
+  --s-12: 3rem;
+  --s-15: 3.75rem;
+  --s-20: 5rem;
+  --s-24: 6rem;
+
+  /* --- shape ------------------------------------------------------- */
+  --r-input: 10px;
+  --r-button: 10px;
+  --r-card: 18px;
+  --r-card-lg: 24px;
+  --r-pill: 999px;
+
+  // Shadows are layered and shallow. A single large soft shadow reads as a
+  // smudge at these radii; two stacked ones keep the edge legible.
+  --shadow-xs: 0 1px 2px rgba(18, 24, 31, 0.05);
+  --shadow-sm: 0 1px 2px rgba(18, 24, 31, 0.05), 0 4px 12px rgba(18, 24, 31, 0.04);
+  --shadow-md: 0 2px 4px rgba(18, 24, 31, 0.04), 0 12px 28px rgba(18, 24, 31, 0.07);
+  --shadow-lg: 0 4px 8px rgba(18, 24, 31, 0.04), 0 24px 48px rgba(18, 24, 31, 0.1);
+
+  /* --- layout ------------------------------------------------------ */
+  --container: 1200px;
+  --container-narrow: 720px;
+  --container-wide: 1360px;
+  --gutter: var(--s-5);
+
+  --header-height: 76px;
+
+  // Section rhythm, fluid so the page does not jump between breakpoints.
+  --section-y: clamp(3rem, 2rem + 5vw, 6rem);
+  --section-y-tight: clamp(2.25rem, 1.6rem + 3vw, 4rem);
+
+  /* --- motion ------------------------------------------------------ */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 200ms;
+  --dur-slow: 420ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur: 0ms;
+    --dur-slow: 0ms;
+  }
+}

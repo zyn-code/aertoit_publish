@@ -1,0 +1,54 @@
+// The conversion moment at the foot of every content page.
+//
+// The one dark band in the layout, and it closes the page rather than
+// interrupting it — the old design used a grey block here, which sat
+// directly against the equally grey "why choose us" section above and read
+// as one long undifferentiated area.
+.closing-cta {
+  position: relative;
+  text-align: center;
+  background: var(--c-navy);
+  color: rgba(255, 255, 255, 0.85);
+  overflow: hidden;
+  isolation: isolate;
+
+  // Soft green glow, top-right. Keeps a large flat navy field from reading
+  // as a slab without introducing a competing colour.
+  &::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -10%;
+    width: min(46rem, 80%);
+    aspect-ratio: 1;
+    z-index: -1;
+    background: radial-gradient(circle, rgba(58, 180, 73, 0.22) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  h2 {
+    color: var(--c-white);
+    margin-bottom: var(--s-4);
+  }
+
+  p {
+    color: rgba(255, 255, 255, 0.82);
+    font-size: var(--fs-lead);
+    margin-inline: auto;
+    max-width: 40rem;
+    margin-bottom: var(--s-8);
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-4);
+    justify-content: center;
+  }
+}
+
+@media (max-width: 560px) {
+  .closing-cta__actions .btn {
+    width: 100%;
+  }
+}

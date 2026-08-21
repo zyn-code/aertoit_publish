@@ -1,0 +1,260 @@
+@let settings = settings$ | async;
+
+<header class="page-hero">
+  <nav class="breadcrumb" aria-label="Fil d’Ariane">
+    <div class="container">
+      <ol>
+        <li><a routerLink="/">Accueil</a></li>
+        <li aria-current="page">Contact</li>
+      </ol>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="page-hero__inner">
+      <h1 class="page-hero__title">Demandez votre devis gratuit</h1>
+      <p class="section__eyebrow">Contact</p>
+      <p class="page-hero__lead">
+        Afin d’obtenir un devis, remplissez le formulaire ci-dessous. Notre équipe fera le maximum
+        pour vous recontacter dans les plus brefs délais !
+      </p>
+    </div>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container contact">
+    <div class="contact__intro">
+      @if (settings) {
+        <div class="contact__details">
+          <h2 class="contact__details-title">Contactez-nous dès maintenant</h2>
+          <p class="contact__details-lead">
+            Notre équipe d’assistantes professionnelles est disponible et à l’écoute pour répondre à
+            toutes vos demandes.
+          </p>
+
+          <dl class="contact__list">
+            <dt>Téléphone</dt>
+            <dd>
+              <a [href]="'tel:' + settings.phone_e164">{{ settings.phone_display }}</a>
+            </dd>
+
+            <dt>Adresse e-mail</dt>
+            <dd>
+              <!-- Both the label and the href come from the same setting, so
+                   they cannot diverge as they do on the live site. -->
+              <a [href]="'mailto:' + settings.contact_email">{{ settings.contact_email }}</a>
+            </dd>
+
+            <dt>Adresse</dt>
+            <dd>
+              <address>
+                {{ settings.address_street }}<br />
+                {{ settings.address_postal }} {{ settings.address_locality }}
+              </address>
+            </dd>
+            <dt>Réseaux sociaux</dt>
+            <dd>
+              <app-social-links [settings]="settings" />
+            </dd>
+          </dl>
+
+          <p class="contact__promise">{{ settings.callback_promise }}</p>
+        </div>
+      }
+    </div>
+
+    <div class="contact__form-wrap">
+      @if (succeeded()) {
+        <div class="alert alert--success" role="status">
+          <strong>Votre demande a bien été envoyée.</strong>
+          <p>Nous vous recontactons sous 48h pour convenir d’un rendez-vous d’estimation.</p>
+        </div>
+      } @else {
+        <h2 class="contact__form-title">Demande de devis</h2>
+        <p class="contact__form-lead">
+          Remplissez ce formulaire afin d’être rappelé dans les plus brefs délais pour convenir d’un
+          rendez-vous et d’une estimation gratuite.
+        </p>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          @if (formError()) {
+            <p class="alert alert--error" role="alert">{{ formError() }}</p>
+          }
+
+          <!-- Service -->
+          <div class="field">
+            <label class="field__label" for="serviceSlug">
+              Service requis <span class="field__required" aria-hidden="true">*</span>
+            </label>
+            <select
+              id="serviceSlug"
+              formControlName="serviceSlug"
+              class="field__control"
+              required
+              [attr.aria-invalid]="showError('serviceSlug') || !!serverError('serviceSlug')"
+              [attr.aria-describedby]="showError('serviceSlug') ? 'serviceSlug-error' : null"
+            >
+              <option value="">Sélectionnez le service souhaité</option>
+              @for (service of services$ | async; track service.slug) {
+                <option [value]="service.slug">{{ service.name }}</option>
+              }
+            </select>
+            @if (showError('serviceSlug') || serverError('serviceSlug')) {
+              <span class="field__error" id="serviceSlug-error">
+                {{ serverError('serviceSlug') ?? 'Veuillez sélectionner un service.' }}
+              </span>
+            }
+          </div>
+
+          <!-- Nom -->
+          <div class="field">
+            <label class="field__label" for="fullName">
+              Nom complet <span class="field__required" aria-hidden="true">*</span>
+            </label>
+            <input
+              id="fullName"
+              type="text"
+              formControlName="fullName"
+              class="field__control"
+              autocomplete="name"
+              placeholder="Saisissez votre nom complet"
+              required
+              [attr.aria-invalid]="showError('fullName')"
+              [attr.aria-describedby]="showError('fullName') ? 'fullName-error' : null"
+            />
+            @if (showError('fullName') || serverError('fullName')) {
+              <span class="field__error" id="fullName-error">
+                {{ serverError('fullName') ?? 'Veuillez saisir votre nom complet.' }}
+              </span>
+            }
+          </div>
+
+          <!-- Téléphone -->
+          <div class="field">
+            <label class="field__label" for="phone">
+              Téléphone <span class="field__required" aria-hidden="true">*</span>
+            </label>
+            <input
+              id="phone"
+              type="tel"
+              formControlName="phone"
+              class="field__control"
+              autocomplete="tel"
+              placeholder="01 46 63 99 59"
+              required
+              [attr.aria-invalid]="showError('phone')"
+              [attr.aria-describedby]="showError('phone') ? 'phone-error' : null"
+            />
+            @if (showError('phone') || serverError('phone')) {
+              <span class="field__error" id="phone-error">
+                {{ serverError('phone') ?? 'Veuillez saisir un numéro de téléphone valide.' }}
+              </span>
+            }
+          </div>
+
+          <!-- E-mail -->
+          <div class="field">
+            <label class="field__label" for="email">
+              Adresse e-mail <span class="field__required" aria-hidden="true">*</span>
+            </label>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              class="field__control"
+              autocomplete="email"
+              placeholder="Saisissez votre e-mail"
+              required
+              [attr.aria-invalid]="showError('email')"
+              [attr.aria-describedby]="showError('email') ? 'email-error' : null"
+            />
+            @if (showError('email') || serverError('email')) {
+              <span class="field__error" id="email-error">
+                {{ serverError('email') ?? 'Veuillez saisir une adresse e-mail valide.' }}
+              </span>
+            }
+          </div>
+
+          <!-- Commune -->
+          <div class="field">
+            <label class="field__label" for="commune">
+              Commune <span class="field__required" aria-hidden="true">*</span>
+            </label>
+            <input
+              id="commune"
+              type="text"
+              formControlName="commune"
+              class="field__control"
+              autocomplete="address-level2"
+              placeholder="Saisissez le nom de votre commune"
+              required
+              [attr.aria-invalid]="showError('commune')"
+              [attr.aria-describedby]="showError('commune') ? 'commune-error' : null"
+            />
+            @if (showError('commune') || serverError('commune')) {
+              <span class="field__error" id="commune-error">
+                {{ serverError('commune') ?? 'Veuillez saisir le nom de votre commune.' }}
+              </span>
+            }
+          </div>
+
+          <!-- Message -->
+          <div class="field">
+            <label class="field__label" for="message">Votre projet (facultatif)</label>
+            <textarea
+              id="message"
+              formControlName="message"
+              class="field__control"
+              rows="4"
+              placeholder="Décrivez brièvement les travaux envisagés"
+            ></textarea>
+          </div>
+
+          <!-- Honeypot: hidden from users and from assistive tech. -->
+          <div class="honeypot" aria-hidden="true">
+            <label for="website">Ne pas remplir</label>
+            <input
+              id="website"
+              type="text"
+              formControlName="website"
+              tabindex="-1"
+              autocomplete="off"
+            />
+          </div>
+
+          <!-- RGPD consent -->
+          <div class="field field--consent">
+            <input
+              id="consentGiven"
+              type="checkbox"
+              formControlName="consentGiven"
+              required
+              [attr.aria-invalid]="showError('consentGiven')"
+              [attr.aria-describedby]="showError('consentGiven') ? 'consent-error' : null"
+            />
+            <label for="consentGiven">
+              J’accepte que mes données soient utilisées pour traiter ma demande de devis,
+              conformément à la
+              <a routerLink="/politique-de-confidentialite">politique de confidentialité</a>.
+              <span class="field__required" aria-hidden="true">*</span>
+            </label>
+          </div>
+          @if (showError('consentGiven')) {
+            <span class="field__error" id="consent-error">
+              Vous devez accepter la politique de confidentialité pour envoyer votre demande.
+            </span>
+          }
+
+          <button type="submit" class="btn btn--primary btn--block" [disabled]="submitting()">
+            {{ submitting() ? 'Envoi en cours…' : 'Envoyer ma demande' }}
+          </button>
+
+          <p class="field__hint">Les champs marqués d’un astérisque (*) sont obligatoires.</p>
+        </form>
+      }
+    </div>
+  </div>
+</section>
+
+<app-faq-section />
+<app-closing-cta />

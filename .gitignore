@@ -1,0 +1,70 @@
+# ---------------------------------------------------------------------
+# Dependencies & build output
+# ---------------------------------------------------------------------
+node_modules/
+dist/
+.angular/
+*.tsbuildinfo
+
+# ---------------------------------------------------------------------
+# Secrets
+#
+# .env holds the database credentials. It is deliberately never committed —
+# .env.example documents the shape instead. The committed example contains
+# XAMPP's local defaults only.
+# ---------------------------------------------------------------------
+.env
+.env.local
+.env.*.local
+
+# ---------------------------------------------------------------------
+# Runtime
+# ---------------------------------------------------------------------
+backend/uploads/
+*.log
+npm-debug.log*
+
+# ---------------------------------------------------------------------
+# Content pipeline (.assets-src)
+#
+# The *scripts* are committed: they document how every page's content and
+# imagery was derived from the live site, and regenerate the SQL migrations.
+# Their inputs and byproducts are not — `raw/` alone is ~130 MB of original
+# JPEGs, all of which are already committed in optimised WebP form under
+# frontend/public/assets/.
+# ---------------------------------------------------------------------
+.assets-src/raw/
+# Page renders of the modifications deck, produced only so its annotated
+# screenshots could be read. The deck itself is the source of record and it
+# is 24 MB, so neither it nor its renders belong in the history.
+.assets-src/deck-renders/
+.assets-src/mods-pages/
+# Screenshots from shoot.mjs — regenerable, and large.
+.assets-src/shots/
+.assets-src/node_modules/
+# puppeteer-core lockfile for the dev-only viewport/a11y checkers.
+.assets-src/content/
+.assets-src/*.jpg
+.assets-src/*.html
+.assets-src/*.txt
+.assets-src/*.css
+.assets-src/package-lock.json
+
+# ---------------------------------------------------------------------
+# Client documents
+#
+# "Modifications Site internet.pdf" is the change request this round of work
+# implements. It is 24 MB of slide imagery; the changes it asks for are
+# recorded in the migrations and in the commit that applies them.
+# ---------------------------------------------------------------------
+*.pdf
+
+# ---------------------------------------------------------------------
+# Editors / OS
+# ---------------------------------------------------------------------
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,111 @@
+<header class="page-hero">
+  <nav class="breadcrumb" aria-label="Fil d’Ariane">
+    <div class="container">
+      <ol>
+        <li><a routerLink="/">Accueil</a></li>
+        <li aria-current="page">Nos prestations</li>
+      </ol>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-hero__inner">
+      <h1 class="page-hero__title">Toutes nos prestations de toiture</h1>
+      <p class="section__eyebrow">Nos Services</p>
+      <p class="page-hero__lead">
+        De la couverture à l’isolation, en neuf comme en rénovation : chaque prestation et ses
+        solutions détaillées.
+      </p>
+    </div>
+  </div>
+</header>
+
+@let services = services$ | async;
+@if (services === null) {
+  <div class="section">
+    <div class="container">
+      <ul class="grid grid--2 list-plain" aria-hidden="true">
+        @for (n of [1, 2]; track n) {
+          <li class="skeleton svc-row__skeleton"></li>
+        }
+      </ul>
+    </div>
+  </div>
+} @else if (services.length) {
+  @for (service of services; track service.slug; let i = $index) {
+    <!-- Alternating image-and-content band per main service, its own
+         sub-services listed underneath, so the parent/child relationship is
+         visible rather than inferred from two unrelated grids. -->
+    <section
+      class="section svc-row"
+      [class.svc-row--reverse]="i % 2 === 1"
+      [class.section--surface]="i % 2 === 1"
+      [attr.aria-labelledby]="'svc-' + service.slug"
+    >
+      <div class="container svc-row__inner">
+        <div class="svc-row__media" appReveal="fade">
+          @if (service.hero_image) {
+            <img
+              [src]="service.hero_image"
+              [alt]="service.hero_image_alt || ''"
+              width="760"
+              height="560"
+              loading="lazy"
+              decoding="async"
+            />
+          }
+        </div>
+
+        <div class="svc-row__body" appReveal>
+          <h2 class="svc-row__title" [id]="'svc-' + service.slug">{{ service.name }}</h2>
+
+          @if (service.card_excerpt) {
+            <p class="svc-row__excerpt">{{ service.card_excerpt }}</p>
+          }
+
+          @let kids = children(service);
+          @if (kids.length) {
+            <h3 class="svc-row__subs-title">Prestations associées</h3>
+            <ul class="svc-row__subs list-plain">
+              @for (child of kids; track child.slug) {
+                <li>
+                  <a class="sub-link" [routerLink]="['/service', child.slug]">
+                    <span class="sub-link__name">{{ child.name }}</span>
+                    @if (child.card_excerpt) {
+                      <span class="sub-link__text">{{ child.card_excerpt }}</span>
+                    }
+                    <svg
+                      class="sub-link__arrow"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                      focusable="false"
+                    >
+                      <path d="M5 12h12.2l-4.6-4.6L14 6l7 7-7 7-1.4-1.4 4.6-4.6H5z" />
+                    </svg>
+                  </a>
+                </li>
+              }
+            </ul>
+          }
+
+          <a [routerLink]="['/service', service.slug]" class="btn btn--primary">
+            Découvrir ce service
+            <span class="btn__arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  }
+} @else {
+  <div class="section">
+    <div class="container">
+      <p class="state">
+        Nos prestations sont momentanément indisponibles.
+        <a routerLink="/contact">Contactez-nous</a> et nous vous renseignerons directement.
+      </p>
+    </div>
+  </div>
+}
+
+<app-faq-section />
+<app-closing-cta />

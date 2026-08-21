@@ -1,0 +1,50 @@
+// =====================================================================
+// Aertoit Couverture — global stylesheet
+//
+// Fonts are self-hosted WOFF2 rather than loaded from a CDN:
+//   Satoshi — Fontshare licence (headings)
+//   Inter   — SIL OFL (body)
+// Drop the .woff2 files into public/assets/fonts/ and the @font-face rules
+// below pick them up. The `size-adjust` fallbacks keep layout shift near
+// zero while the webfont loads.
+// =====================================================================
+
+@use 'styles/tokens';
+@use 'styles/base';
+@use 'styles/components';
+@use 'styles/motion';
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/assets/fonts/Satoshi-Variable.woff2') format('woff2-variations');
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/assets/fonts/Inter-Variable.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+// Metric-matched fallbacks so swapping the webfont in barely shifts layout.
+@font-face {
+  font-family: 'Satoshi Fallback';
+  src: local('Arial');
+  size-adjust: 105%;
+  ascent-override: 92%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial');
+  size-adjust: 107%;
+  ascent-override: 90%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+}

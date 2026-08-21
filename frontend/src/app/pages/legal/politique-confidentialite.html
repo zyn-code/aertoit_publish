@@ -1,0 +1,145 @@
+@let s = settings$ | async;
+
+<article class="section legal">
+  <div class="container container--narrow">
+    <h1>Politique de confidentialité</h1>
+    <p class="legal__lead">
+      Cette politique explique quelles données personnelles nous collectons via ce site, pourquoi
+      nous les collectons, combien de temps nous les conservons et comment exercer vos droits.
+    </p>
+
+    <section aria-labelledby="responsable">
+      <h2 id="responsable">Responsable du traitement</h2>
+      <p>
+        Le responsable du traitement est {{ s?.legal_name || s?.company_name }}, dont le siège
+        social est situé {{ s?.address_street }}, {{ s?.address_postal }} {{ s?.address_locality }}.
+      </p>
+      <p>
+        Pour toute question relative à vos données :
+        @if (s) {
+          <a [href]="'mailto:' + s.contact_email">{{ s.contact_email }}</a>
+          ou <a [href]="'tel:' + s.phone_e164">{{ s.phone_display }}</a
+          >.
+        }
+      </p>
+    </section>
+
+    <section aria-labelledby="donnees-collectees">
+      <h2 id="donnees-collectees">Données collectées et finalités</h2>
+
+      <h3>Formulaire de demande de devis</h3>
+      <p>
+        Nous collectons votre <strong>nom complet</strong>, votre
+        <strong>numéro de téléphone</strong>, votre <strong>adresse e-mail</strong>, votre
+        <strong>commune</strong> et, le cas échéant, la
+        <strong>description de votre projet</strong>.
+      </p>
+      <ul>
+        <li>
+          <strong>Finalité :</strong> vous recontacter, organiser une visite d’estimation et établir
+          un devis.
+        </li>
+        <li>
+          <strong>Base légale :</strong> votre consentement (RGPD art. 6.1.a), recueilli par la case
+          à cocher du formulaire, puis mesures précontractuelles (art. 6.1.b).
+        </li>
+        <li>
+          <strong>Durée de conservation :</strong> 3 ans à compter du dernier contact si aucun devis
+          n’aboutit ; 10 ans à compter de la fin du chantier pour les dossiers ayant donné lieu à
+          des travaux, au titre de la garantie décennale.
+        </li>
+      </ul>
+
+      <h3>Candidatures</h3>
+      <p>
+        Si vous postulez à une offre, nous collectons vos coordonnées et les éléments que vous nous
+        transmettez.
+      </p>
+      <ul>
+        <li><strong>Finalité :</strong> étudier votre candidature.</li>
+        <li><strong>Base légale :</strong> votre consentement.</li>
+        <li>
+          <strong>Durée de conservation :</strong> 2 ans à compter du dernier contact, sauf demande
+          de suppression.
+        </li>
+      </ul>
+
+      <h3>Données techniques</h3>
+      <p>
+        Lors de l’envoi d’un formulaire, nous enregistrons votre adresse IP et votre navigateur. Ces
+        éléments servent exclusivement à prévenir les envois automatisés et abusifs (intérêt
+        légitime, RGPD art. 6.1.f) et sont conservés 12 mois.
+      </p>
+    </section>
+
+    <section aria-labelledby="cookies">
+      <h2 id="cookies">Cookies et mesure d’audience</h2>
+      <p>
+        Les cookies strictement nécessaires au fonctionnement du site sont déposés sans
+        consentement, conformément aux recommandations de la CNIL.
+      </p>
+      <p>
+        Les cookies de mesure d’audience (Google Analytics) ne sont déposés
+        <strong>qu’après votre acceptation explicite</strong> via le bandeau affiché lors de votre
+        première visite. Tant que vous n’avez pas accepté, aucun cookie de mesure d’audience n’est
+        écrit et aucune donnée n’est transmise. Vous pouvez modifier ou retirer votre choix à tout
+        moment depuis le lien « Paramètres des cookies » en pied de page.
+      </p>
+    </section>
+
+    <section aria-labelledby="destinataires">
+      <h2 id="destinataires">Destinataires</h2>
+      <p>
+        Vos données sont destinées aux seules équipes commerciales et administratives d’Aertoit
+        Couverture. Elles ne sont ni vendues, ni louées, ni cédées à des tiers à des fins
+        commerciales. Elles peuvent être traitées par nos prestataires techniques (hébergement,
+        messagerie) agissant sur instruction et dans l’Union européenne.
+      </p>
+    </section>
+
+    <section aria-labelledby="droits">
+      <h2 id="droits">Vos droits</h2>
+      <p>
+        Conformément au RGPD et à la loi Informatique et Libertés, vous disposez des droits suivants
+        :
+      </p>
+      <ul>
+        <li><strong>Accès</strong> — obtenir une copie des données vous concernant ;</li>
+        <li><strong>Rectification</strong> — corriger des données inexactes ;</li>
+        <li><strong>Effacement</strong> — demander la suppression de vos données ;</li>
+        <li><strong>Limitation</strong> — restreindre temporairement le traitement ;</li>
+        <li>
+          <strong>Opposition</strong> — vous opposer à un traitement fondé sur l’intérêt légitime ;
+        </li>
+        <li><strong>Portabilité</strong> — recevoir vos données dans un format structuré ;</li>
+        <li>
+          <strong>Retrait du consentement</strong> — à tout moment, sans effet sur les traitements
+          déjà réalisés.
+        </li>
+      </ul>
+      <p>
+        Pour exercer ces droits, écrivez-nous à
+        @if (s) {
+          <a [href]="'mailto:' + s.contact_email">{{ s.contact_email }}</a>
+        }
+        ou par courrier à l’adresse du siège social. Nous répondons sous un mois.
+      </p>
+      <p>
+        Si vous estimez que vos droits ne sont pas respectés, vous pouvez introduire une réclamation
+        auprès de la CNIL —
+        <a href="https://www.cnil.fr" rel="noopener noreferrer" target="_blank">www.cnil.fr</a>, 3
+        place de Fontenoy, 75007 Paris.
+      </p>
+    </section>
+
+    <section aria-labelledby="securite">
+      <h2 id="securite">Sécurité</h2>
+      <p>
+        Le site est servi exclusivement en HTTPS. Les données transmises via les formulaires sont
+        stockées sur une base à accès restreint, et les échanges avec notre serveur sont chiffrés.
+        L’accès aux demandes est limité aux personnes qui en ont besoin dans le cadre de leurs
+        fonctions.
+      </p>
+    </section>
+  </div>
+</article>

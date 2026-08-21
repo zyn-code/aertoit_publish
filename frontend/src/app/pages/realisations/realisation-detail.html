@@ -1,0 +1,106 @@
+@let project = project$ | async;
+
+@if (project) {
+  <nav class="breadcrumb" aria-label="Fil d’Ariane">
+    <div class="container">
+      <ol>
+        <li><a routerLink="/">Accueil</a></li>
+        <li><a routerLink="/realisations">Réalisations</a></li>
+        <li aria-current="page">{{ project.title }}</li>
+      </ol>
+    </div>
+  </nav>
+
+  <article class="section">
+    <div class="container container--narrow project-detail">
+      <h1>{{ project.title }}</h1>
+
+      <p class="project-detail__meta">
+        @if (project.service_name) {
+          <span>{{ project.service_name }}</span>
+        }
+        @if (project.commune) {
+          <span
+            >{{ project.commune
+            }}{{ project.postal_code ? ' (' + project.postal_code + ')' : '' }}</span
+          >
+        }
+        @if (project.year) {
+          <span>{{ project.year }}</span>
+        }
+      </p>
+
+      <p class="project-detail__summary">{{ project.summary }}</p>
+
+      <!-- Before/after. Both images carry real alt text describing the work,
+           not a filename. -->
+      @if (project.image_before || project.image_after) {
+        <div class="compare">
+          @if (project.image_before) {
+            <figure>
+              <img
+                [src]="project.image_before"
+                [alt]="project.image_before_alt || 'Toiture avant travaux'"
+                width="400"
+                height="300"
+                decoding="async"
+              />
+              <figcaption>Avant</figcaption>
+            </figure>
+          }
+          @if (project.image_after) {
+            <figure>
+              <img
+                [src]="project.image_after"
+                [alt]="project.image_after_alt || 'Toiture après travaux'"
+                width="400"
+                height="300"
+                decoding="async"
+              />
+              <figcaption>Après</figcaption>
+            </figure>
+          }
+        </div>
+      }
+
+      @if (project.body) {
+        <div class="prose" [innerHTML]="project.body"></div>
+      }
+
+      @if (project.gallery?.length) {
+        <h2>Le chantier en images</h2>
+        <ul class="gallery">
+          @for (image of project.gallery; track image.src) {
+            <li>
+              <img [src]="image.src" [alt]="image.alt" loading="lazy" decoding="async" />
+            </li>
+          }
+        </ul>
+      }
+
+      @if (project.service_slug) {
+        <p>
+          <a [routerLink]="['/service', project.service_slug]" class="btn btn--ghost">
+            En savoir plus sur nos travaux de {{ project.service_name }}
+          </a>
+        </p>
+      }
+    </div>
+  </article>
+
+  <section class="section section--surface article-cta" aria-labelledby="project-cta">
+    <div class="container container--narrow" style="text-align: center">
+      <h2 id="project-cta">Un projet similaire ?</h2>
+      <p>Recevez une estimation gratuite pour votre toiture.</p>
+      <a routerLink="/contact" class="btn btn--primary">Demander un devis</a>
+    </div>
+  </section>
+} @else {
+  <section class="section">
+    <div class="container container--narrow">
+      <h1>Réalisation introuvable</h1>
+      <p>Cette réalisation n’existe pas ou n’est plus publiée.</p>
+      <a routerLink="/realisations" class="btn btn--primary">Voir toutes nos réalisations</a>
+    </div>
+  </section>
+}

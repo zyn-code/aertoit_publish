@@ -1,0 +1,72 @@
+.commune-rotator {
+  margin: 0 0 var(--s-5);
+  font-family: var(--font-heading);
+  font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+  font-weight: var(--fw-semibold);
+  color: var(--c-blue);
+  text-wrap: balance;
+
+  // Reserve one line's height so the surrounding layout never jumps as the
+  // commune changes — the whole point of stacking rather than swapping.
+  &__viewport {
+    position: relative;
+    display: block;
+    min-height: 1.4em;
+  }
+
+  &__item {
+    position: absolute;
+    inset: 0;
+    display: block;
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+    transition:
+      opacity 420ms var(--reveal-ease),
+      transform 420ms var(--reveal-ease);
+  }
+
+  &__item.is-current {
+    opacity: 1;
+    transform: none;
+  }
+
+  // Server-rendered and no-JS: items are not absolutely stacked, so the
+  // full list reads as plain text rather than collapsing to nothing.
+  &.is-static &__viewport {
+    min-height: 0;
+  }
+
+  &.is-static &__item {
+    position: static;
+    display: inline;
+    opacity: 1;
+    transform: none;
+    transition: none;
+
+    &:not(:last-child)::after {
+      content: ' · ';
+      color: var(--c-ink-muted);
+    }
+  }
+}
+
+// No JavaScript at all: the `is-static` class is never applied because the
+// component never boots, so pin the same static presentation here.
+html:not(.js) .commune-rotator {
+  &__viewport {
+    min-height: 0;
+  }
+
+  &__item {
+    position: static;
+    display: inline;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .commune-rotator__item {
+    transition: none;
+  }
+}

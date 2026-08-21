@@ -1,0 +1,108 @@
+@if (count()) {
+  <div class="reviews">
+    <!-- The scroller is focusable and labelled, so a keyboard user can reach
+         it and arrow through the cards without the buttons below. -->
+    <div
+      class="reviews__viewport"
+      #track
+      tabindex="0"
+      role="group"
+      aria-label="Avis clients, faites défiler horizontalement"
+      (scroll)="onScroll()"
+    >
+      <ul class="reviews__track list-plain">
+        @for (r of reviews(); track r.id; let i = $index) {
+          <li class="review-card" [attr.data-card]="i" [class]="'review-card--' + variant(i)">
+            <!-- Full approved text, never truncated. -->
+            <blockquote class="review-card__quote">
+              <p>{{ r.body }}</p>
+            </blockquote>
+
+            <div class="review-card__person">
+              <!-- An initial, not a stock portrait: inventing a face for a
+                   real reviewer would be fabricating content. -->
+              <span class="review-card__avatar" aria-hidden="true">{{ r.author.charAt(0) }}</span>
+              <span class="review-card__id">
+                <cite class="review-card__name">{{ r.author }}</cite>
+                @if (r.author_role) {
+                  <span class="review-card__role">{{ r.author_role }}</span>
+                }
+              </span>
+            </div>
+
+            <div class="review-card__foot">
+              <span class="review-card__stars" aria-hidden="true">
+                @for (s of starSlots; track s) {
+                  <svg viewBox="0 0 24 24" [class.is-on]="s <= r.rating" focusable="false">
+                    <path
+                      d="M12 17.3 6.2 20.6l1.5-6.6L2.6 9.5l6.7-.6L12 2.7l2.7 6.2 6.7.6-5.1 4.5 1.5 6.6Z"
+                    />
+                  </svg>
+                }
+              </span>
+              <span class="visually-hidden">Note : {{ r.rating }} sur 5</span>
+
+              @if (r.google_url) {
+                <a
+                  class="review-card__google"
+                  [href]="r.google_url"
+                  rel="noopener noreferrer nofollow"
+                  target="_blank"
+                >
+                  <span aria-hidden="true">Google</span>
+                  <span class="visually-hidden">
+                    Voir l’avis de {{ r.author }} sur Google (nouvelle fenêtre)
+                  </span>
+                </a>
+              } @else {
+                <span class="review-card__google" aria-hidden="true">Google</span>
+              }
+            </div>
+          </li>
+        }
+      </ul>
+    </div>
+
+    @if (count() > 1) {
+      <button
+        type="button"
+        class="reviews__arrow reviews__arrow--prev"
+        [disabled]="atStart()"
+        (click)="step(-1)"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M15.4 4.6 7 13l8.4 8.4 1.4-1.4L9.8 13l7-7z" />
+        </svg>
+        <span class="visually-hidden">Avis précédent</span>
+      </button>
+
+      <button
+        type="button"
+        class="reviews__arrow reviews__arrow--next"
+        [disabled]="atEnd()"
+        (click)="step(1)"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M8.6 4.6 7.2 6l7 7-7 7 1.4 1.4L17 13z" />
+        </svg>
+        <span class="visually-hidden">Avis suivant</span>
+      </button>
+
+      <ul class="reviews__dots list-plain">
+        @for (r of reviews(); track r.id; let i = $index) {
+          <li>
+            <button
+              type="button"
+              class="reviews__dot"
+              [class.is-active]="i === active()"
+              [attr.aria-current]="i === active() ? 'true' : null"
+              (click)="goTo(i)"
+            >
+              <span class="visually-hidden">Aller à l’avis {{ i + 1 }} sur {{ count() }}</span>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+}

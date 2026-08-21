@@ -1,0 +1,366 @@
+// =====================================================================
+// Reviews carousel
+//
+// Tall rounded cards, white at the top running into blue or green at the
+// bottom, with the neighbouring cards half-visible at each edge so the
+// section reads as scrollable before anything is clicked.
+// =====================================================================
+
+.reviews {
+  position: relative;
+
+  // Full-bleed out of the container so the peeking cards sit beyond the
+  // text column, as the design shows. `100vw` rather than `100%` because the
+  // parent is the container; `calc(50% - 50vw)` re-centres it.
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+
+  /**
+   * Side spacing lives on the track, not on the section.
+   *
+   * The carousel is full-bleed, so padding the outer section does nothing —
+   * the track holds the cards, and it is what keeps them off the viewport
+   * edge. This steps up with the viewport and is floored against the
+   * container inset, so the first card always lines up with the heading.
+   */
+  --reviews-gutter: var(--s-4); // 16px, mobile
+
+  &__viewport {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    // Hidden bar: the arrows and dots are the affordance, and a bar under a
+    // full-bleed row of cards reads as a page-level scrollbar.
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    &:focus-visible {
+      outline: 3px solid var(--c-focus);
+      outline-offset: -3px;
+    }
+  }
+
+  &__track {
+    display: flex;
+    gap: var(--s-4);
+    padding-inline: max(var(--reviews-gutter), calc((100vw - var(--container)) / 2));
+    padding-block: var(--s-3) var(--s-5);
+    scroll-padding-inline: max(var(--reviews-gutter), calc((100vw - var(--container)) / 2));
+  }
+
+  // --- controls --------------------------------------------------------
+
+  &__arrow {
+    position: absolute;
+    top: calc(50% - var(--s-8));
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    background: var(--c-white);
+    border: 1px solid var(--c-border);
+    border-radius: 50%;
+    box-shadow: var(--shadow-md);
+    color: var(--c-ink);
+    cursor: pointer;
+    transition:
+      background-color var(--dur) var(--ease),
+      opacity var(--dur) var(--ease);
+
+    svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    &:hover:not(:disabled) {
+      background: var(--c-blue-tint);
+      color: var(--c-blue);
+    }
+
+    // Kept in the layout when spent, so the row does not shift under the
+    // pointer as the reader reaches an end.
+    &:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+
+    &--prev {
+      left: max(var(--s-2), calc((100vw - var(--container)) / 2 - 64px));
+    }
+    &--next {
+      right: max(var(--s-2), calc((100vw - var(--container)) / 2 - 64px));
+    }
+  }
+
+  &__dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--s-1);
+    margin-top: var(--s-2);
+  }
+
+  // 10px of paint inside a 44px target — WCAG 2.5.8 measures the control.
+  &__dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    background: none;
+    border: 0;
+    cursor: pointer;
+
+    &::before {
+      content: '';
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--c-border-strong);
+      transition:
+        background-color var(--dur) var(--ease),
+        transform var(--dur) var(--ease);
+    }
+
+    &.is-active::before {
+      background: var(--c-blue);
+      transform: scale(1.25);
+    }
+
+    &:hover::before {
+      background: var(--c-blue-mid);
+    }
+  }
+}
+
+// --- card --------------------------------------------------------------
+
+.review-card {
+  display: flex;
+  flex-direction: column;
+  // Four across inside the container rather than three, with a lower floor:
+  // these quotes run two or three lines, so a taller card was mostly padding.
+  // `flex: none` keeps them from being squeezed.
+  flex: none;
+  width: clamp(14rem, calc((min(100vw, var(--container)) - 3 * var(--s-4)) / 4), 19rem);
+  min-height: 16rem;
+  padding: var(--s-5);
+  border-radius: var(--r-card-lg);
+  scroll-snap-align: start;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+
+  &--blue {
+    background: var(--grad-card-blue);
+  }
+  &--green {
+    background: var(--grad-card-green);
+  }
+
+  &__quote {
+    margin: 0 0 var(--s-4);
+    padding: 0;
+    // Takes the slack so the person and footer rows line up across the row
+    // whatever the length of the quote.
+    flex: 1;
+    color: var(--c-ink);
+    font-size: var(--fs-tiny);
+    line-height: 1.5;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  &__person {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    margin-bottom: var(--s-5);
+  }
+
+  &__avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--c-blue-deep);
+    color: var(--c-white);
+    font-family: var(--font-heading);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-small);
+  }
+
+  &--green &__avatar {
+    background: var(--c-green-darker);
+  }
+
+  &__id {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__name {
+    font-style: normal;
+    font-family: var(--font-heading);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-small);
+    color: var(--c-ink);
+  }
+
+  &__role {
+    font-size: var(--fs-tiny);
+    color: var(--c-ink-muted);
+  }
+
+  // Sits on the saturated end of the gradient, so its contents are white.
+  &__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    margin-top: auto;
+  }
+
+  &__stars {
+    display: inline-flex;
+    gap: 2px;
+
+    svg {
+      width: 13px;
+      height: 13px;
+      fill: rgba(255, 255, 255, 0.45);
+    }
+
+    svg.is-on {
+      fill: #ffc043;
+    }
+  }
+
+  &__google {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-family: var(--font-heading);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-small);
+    color: var(--c-white);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// --- responsive --------------------------------------------------------
+
+@media (min-width: 641px) {
+  .reviews {
+    --reviews-gutter: var(--s-8); // 32px, tablet
+  }
+}
+
+@media (min-width: 1025px) {
+  .reviews {
+    --reviews-gutter: var(--s-15); // 60px, desktop — inside the container
+  }
+}
+
+// Two cards, with the third peeking.
+@media (max-width: 1024px) {
+  .review-card {
+    width: clamp(14rem, calc((100vw - 3 * var(--s-4)) / 2), 18rem);
+    min-height: 15rem;
+  }
+
+  .reviews__arrow {
+    // Inside the viewport once there is no room beside the container.
+    &--prev {
+      left: var(--s-2);
+    }
+    &--next {
+      right: var(--s-2);
+    }
+  }
+}
+
+// One card with a preview of the next.
+@media (max-width: 680px) {
+  .review-card {
+    width: min(80vw, 18rem);
+    min-height: 0;
+    padding: var(--s-5) var(--s-4);
+  }
+
+  .reviews {
+    &__track {
+      gap: var(--s-4);
+      padding-block: var(--s-2) var(--s-6);
+    }
+
+    // Below the cards rather than over them: at this width an overlaid arrow
+    // covers a third of the card it is meant to reveal.
+    &__arrow {
+      position: static;
+      width: 44px;
+      height: 44px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    &__dots {
+      // The arrows join the dot row, so the three controls sit together.
+      display: flex;
+      gap: var(--s-1);
+    }
+  }
+}
+
+// Below 680px the arrows leave the card edges and join the dot row, so the
+// three controls sit together under the track on one line.
+@media (max-width: 680px) {
+  .reviews {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      'track track track'
+      'prev dots next';
+    align-items: center;
+    row-gap: var(--s-2);
+
+    &__viewport {
+      grid-area: track;
+    }
+    &__arrow--prev {
+      grid-area: prev;
+      justify-self: end;
+    }
+    &__dots {
+      grid-area: dots;
+      margin-top: 0;
+    }
+    &__arrow--next {
+      grid-area: next;
+      justify-self: start;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reviews__viewport {
+    scroll-behavior: auto;
+  }
+}

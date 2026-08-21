@@ -1,0 +1,196 @@
+// =====================================================================
+// Site footer
+//
+// Light and column-based. The previous footer was a near-black slab, which
+// ended every page on a heavy note and needed its own inverted colour set.
+// =====================================================================
+
+.site-footer {
+  background: var(--c-surface);
+  border-top: 1px solid var(--c-border);
+  color: var(--c-ink-muted);
+  padding-block: var(--section-y) 0;
+  // No top margin. Every page ends on a section that already carries its own
+  // padding, and the margin showed as a white strip between the navy closing
+  // CTA and the footer's grey.
+
+  &__grid {
+    display: grid;
+    // The brand column carries the logo and the social row, so it is given
+    // more room than the three link columns.
+    grid-template-columns: 1.5fr 1fr 1fr 1.3fr;
+    gap: var(--s-10);
+    padding-bottom: var(--s-12);
+  }
+
+  // Hairlines between desktop columns. Drawn with a border on the column
+  // rather than a separate element, so they cannot fall out of step when the
+  // grid rewraps.
+  &__col + &__col {
+    padding-left: var(--s-10);
+    border-left: 1px solid var(--c-border);
+  }
+
+  &__brand {
+    display: inline-block;
+    margin-bottom: var(--s-5);
+  }
+
+  &__logo {
+    height: 52px;
+    width: auto;
+  }
+
+  &__tagline {
+    font-size: var(--fs-small);
+    line-height: var(--lh-body);
+    margin-bottom: var(--s-6);
+    max-width: 26rem;
+  }
+
+  &__heading {
+    font-family: var(--font-heading);
+    font-size: var(--fs-tiny);
+    font-weight: var(--fw-semibold);
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--c-ink);
+    margin-bottom: var(--s-4);
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: var(--fs-small);
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      // Padding as well as min-height: a service name that wraps to two
+      // lines already exceeds 44px, so the height alone stopped separating
+      // it from the entry below and the column lost its rhythm.
+      padding-block: var(--s-1);
+      color: var(--c-ink-muted);
+      text-decoration: none;
+
+      &:hover {
+        color: var(--c-green-darker);
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &__list--contact {
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--s-3);
+      margin-bottom: var(--s-2);
+    }
+
+    svg {
+      width: 17px;
+      height: 17px;
+      margin-top: 11px;
+      flex: none;
+      fill: var(--c-green-dark);
+    }
+
+    address {
+      font-style: normal;
+      line-height: var(--lh-body);
+      padding-block: var(--s-2);
+    }
+  }
+
+  &__cta {
+    margin-top: var(--s-5);
+  }
+
+  &__legal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3) var(--s-6);
+    padding-block: var(--s-5);
+    border-top: 1px solid var(--c-border);
+  }
+
+  &__copyright {
+    margin: 0;
+    font-size: var(--fs-tiny);
+  }
+
+  &__legal-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2) var(--s-6);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: var(--fs-tiny);
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      color: var(--c-ink-muted);
+      text-decoration: none;
+
+      &:hover {
+        color: var(--c-green-darker);
+        text-decoration: underline;
+      }
+    }
+  }
+
+  /** Styled as a link but a real <button> — it performs an action. */
+  &__link-button {
+    padding: 0;
+    background: none;
+    border: 0;
+    color: var(--c-ink-muted);
+    font: inherit;
+    font-size: var(--fs-tiny);
+    text-decoration: underline;
+    cursor: pointer;
+    min-height: 44px;
+
+    &:hover {
+      color: var(--c-green-darker);
+    }
+  }
+}
+
+// Two columns before one, so the four columns never squeeze to an
+// unreadable width on a tablet.
+@media (max-width: 1024px) {
+  .site-footer__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-8);
+  }
+
+  // The rules only made sense while the columns were a single row.
+  .site-footer__col + .site-footer__col {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .site-footer__col--brand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 600px) {
+  .site-footer__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .site-footer__legal {
+    justify-content: flex-start;
+  }
+}

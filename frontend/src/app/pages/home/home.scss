@@ -1,0 +1,540 @@
+// =====================================================================
+// Home page
+// =====================================================================
+
+// --- hero --------------------------------------------------------------
+//
+// A photograph with a directional scrim, not a texture with text on top.
+// The scrim is heaviest on the left where the copy sits and clears towards
+// the right so the roof stays visible — the previous flat wash dulled the
+// whole image and still left the headline fighting the tile faces.
+
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  // Sized by its content, with a floor rather than a fixed height. The old
+  // `min-height: 88vh` left a phone showing a mostly empty photo.
+  min-height: clamp(30rem, 62vh, 40rem);
+  padding-block: var(--section-y);
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--c-navy);
+
+  &__media {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      // Keeps the roofline rather than the sky when the frame is short and
+      // wide, which is what a phone in portrait gives us.
+      object-position: center 60%;
+    }
+  }
+
+  &__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      100deg,
+      rgba(11, 34, 63, 0.92) 0%,
+      rgba(11, 34, 63, 0.78) 38%,
+      rgba(11, 34, 63, 0.35) 72%,
+      rgba(11, 34, 63, 0.2) 100%
+    );
+  }
+
+  &__inner {
+    position: relative;
+  }
+
+  &__content {
+    max-width: 40rem;
+  }
+
+  &__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    margin: 0 0 var(--s-4);
+    padding: var(--s-1) var(--s-4);
+    border-radius: var(--r-pill);
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    color: var(--c-white);
+    font-size: var(--fs-tiny);
+    font-weight: var(--fw-semibold);
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    backdrop-filter: blur(4px);
+  }
+
+  &__title {
+    font-size: var(--fs-display);
+    line-height: var(--lh-tight);
+    font-weight: var(--fw-bold);
+    color: var(--c-white);
+    margin-bottom: var(--s-5);
+  }
+
+  &__lead {
+    font-size: var(--fs-lead);
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: var(--s-8);
+    max-width: 34rem;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-4);
+    margin-bottom: var(--s-8);
+  }
+
+  // Certifications rather than counts: verifiable credentials, where the
+  // rating and client-count claims that stood here had no source.
+  &__proof {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3) var(--s-6);
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: var(--s-2);
+      font-size: var(--fs-small);
+      font-weight: var(--fw-medium);
+      color: rgba(255, 255, 255, 0.92);
+    }
+
+    svg {
+      width: 18px;
+      height: 18px;
+      flex: none;
+      fill: var(--c-green);
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    min-height: 0;
+    padding-block: var(--s-12) var(--s-10);
+
+    &__actions .btn {
+      // Stacked rather than squeezed: two CTAs side by side at 360px leave
+      // each one too narrow for its label.
+      width: 100%;
+    }
+
+    &__scrim {
+      // Vertical on a narrow screen — the horizontal fade would leave the
+      // copy over the clear part of the image.
+      background: linear-gradient(
+        180deg,
+        rgba(11, 34, 63, 0.7) 0%,
+        rgba(11, 34, 63, 0.86) 55%,
+        rgba(11, 34, 63, 0.94) 100%
+      );
+    }
+  }
+}
+
+// --- services ----------------------------------------------------------
+
+.service-skeleton {
+  aspect-ratio: 3 / 2;
+  min-height: 20rem;
+}
+
+// --- certifications ----------------------------------------------------
+
+.cert-band {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
+  gap: var(--s-12);
+  align-items: start;
+
+  &__intro {
+    position: sticky;
+    top: calc(var(--header-height) + var(--s-6));
+  }
+
+  // Two columns, so the four credentials form an even 2x2 block. `auto-fit`
+  // gave three columns at this width and left the fourth alone on its own
+  // row, which read as a layout fault rather than a choice.
+  &__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-7) var(--s-6);
+  }
+}
+
+.cert {
+  &__logo {
+    height: 56px;
+    width: auto;
+    max-width: 100%;
+    margin-bottom: var(--s-4);
+    object-fit: contain;
+    object-position: left center;
+  }
+
+  &__name {
+    font-size: var(--fs-h4);
+    margin-bottom: var(--s-2);
+    padding-top: var(--s-4);
+    border-top: 2px solid var(--c-green);
+  }
+
+  &__desc {
+    font-size: var(--fs-small);
+    color: var(--c-ink-muted);
+    margin: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .cert-band {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-10);
+
+    &__intro {
+      position: static;
+    }
+  }
+}
+
+// --- process -----------------------------------------------------------
+//
+// Three numbered steps joined by a progress line. The line is a pseudo-
+// element on the list rather than a border on each step, so it stops at the
+// first and last marker instead of over-running the row.
+
+.steps {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-8);
+
+  // Horizontal rule behind the markers, inset by half a column at each end
+  // so it runs between the first and last marker and no further.
+  &::before {
+    content: '';
+    position: absolute;
+    top: 27px;
+    left: calc(16.666% + 27px);
+    right: calc(16.666% + 27px);
+    height: 2px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--c-green-tint-strong) 0 8px,
+      transparent 8px 16px
+    );
+  }
+}
+
+.step {
+  position: relative;
+  text-align: center;
+
+  &__marker {
+    display: flex;
+    justify-content: center;
+    margin-bottom: var(--s-5);
+  }
+
+  &__number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--c-white);
+    border: 2px solid var(--c-green);
+    color: var(--c-green-darker);
+    font-family: var(--font-heading);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-h3);
+    box-shadow: 0 0 0 6px var(--c-white);
+  }
+
+  &__title {
+    font-size: var(--fs-h4);
+    margin-bottom: var(--s-3);
+  }
+
+  &__text {
+    color: var(--c-ink-muted);
+    margin: 0;
+    max-width: 22rem;
+    margin-inline: auto;
+  }
+}
+
+.steps__promise {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin: 0;
+  padding: var(--s-3) var(--s-5);
+  border-radius: var(--r-pill);
+  background: var(--c-green-tint);
+  color: var(--c-green-darker);
+  font-size: var(--fs-small);
+  font-weight: var(--fw-semibold);
+
+  svg {
+    width: 18px;
+    height: 18px;
+    flex: none;
+    fill: currentColor;
+  }
+}
+
+@media (max-width: 800px) {
+  .steps {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+
+    // Vertical on mobile: the connector runs down the left gutter through
+    // the markers, so the sequence still reads as a sequence.
+    &::before {
+      top: 28px;
+      bottom: 28px;
+      left: 27px;
+      right: auto;
+      width: 2px;
+      height: auto;
+      background: repeating-linear-gradient(
+        180deg,
+        var(--c-green-tint-strong) 0 8px,
+        transparent 8px 16px
+      );
+    }
+  }
+
+  .step {
+    display: flex;
+    gap: var(--s-5);
+    text-align: left;
+    padding-bottom: var(--s-8);
+
+    &:last-child {
+      padding-bottom: 0;
+    }
+
+    &__marker {
+      margin-bottom: 0;
+      flex: none;
+    }
+
+    &__number {
+      width: 56px;
+      height: 56px;
+      box-shadow: 0 0 0 6px var(--c-surface-soft);
+    }
+
+    &__text {
+      margin-inline: 0;
+    }
+  }
+}
+
+// --- reviews -----------------------------------------------------------
+
+.review {
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    margin-bottom: var(--s-4);
+  }
+
+  &__source {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    font-size: var(--fs-tiny);
+    font-weight: var(--fw-medium);
+    color: var(--c-ink-muted);
+
+    svg {
+      width: 15px;
+      height: 15px;
+      flex: none;
+    }
+  }
+
+  &__headline {
+    font-size: var(--fs-h4);
+    margin-bottom: var(--s-3);
+  }
+
+  // No line clamp: the approved text is shown in full. Cards in a row are
+  // equal height because the grid stretches them, and the quote takes the
+  // slack so the author row still lines up across the row.
+  &__body {
+    margin: 0 0 var(--s-5);
+    padding: 0;
+    flex: 1;
+    color: var(--c-ink-muted);
+
+    p {
+      margin: 0;
+    }
+  }
+
+  &__author {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--c-border);
+  }
+
+  // An initial, not a photograph: inventing a face for a real reviewer would
+  // be fabricating content.
+  &__avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--c-green-tint);
+    color: var(--c-green-darker);
+    font-family: var(--font-heading);
+    font-weight: var(--fw-bold);
+  }
+
+  &__name {
+    display: block;
+    font-style: normal;
+    font-weight: var(--fw-semibold);
+    color: var(--c-ink);
+    font-size: var(--fs-small);
+  }
+
+  &__role {
+    display: block;
+    font-size: var(--fs-tiny);
+    color: var(--c-ink-muted);
+  }
+
+  &__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-top: var(--s-2);
+    font-size: var(--fs-small);
+    font-weight: var(--fw-medium);
+    color: var(--c-green-darker);
+  }
+}
+
+// --- blog cards --------------------------------------------------------
+
+.post__date {
+  display: block;
+  font-size: var(--fs-tiny);
+  color: var(--c-ink-muted);
+  margin-bottom: var(--s-2);
+}
+
+// The reviews band runs tighter than a full section: the carousel already
+// carries its own vertical padding, so the section only needs to separate it
+// from its neighbours.
+.reviews-band {
+  padding-block: var(--section-y-tight);
+
+  .section__header {
+    margin-bottom: var(--s-6);
+  }
+}
+
+// Stands in for a certification whose official artwork has not been supplied,
+// so the credential row reads evenly instead of mixing logos with bare text.
+// A shield-check glyph, not an imitation of the partner's mark.
+.cert__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: var(--s-4);
+  border-radius: var(--r-card);
+  background: var(--c-blue-tint);
+  color: var(--c-blue);
+
+  svg {
+    width: 28px;
+    height: 28px;
+    fill: currentColor;
+  }
+}
+
+// =====================================================================
+// Hero service links
+//
+// Pulled up over the hero with a negative margin rather than positioned
+// absolutely: the block keeps its place in the flow, so the white section
+// beneath still reserves the room its lower half occupies and nothing has
+// to be re-measured when the viewport changes.
+//
+// The overlap is about 45% of the block's own height on desktop and tablet.
+// On a phone the block is six cards tall and the hero cannot give up half
+// of that, so it takes a deliberately shallower bite and the rest of the
+// cards run on into the white below.
+// =====================================================================
+
+$hero-links-overlap: 126px; // 45% of 280px (2 rows of 130 + 20 gap)
+$hero-links-overlap-md: 172px; // 45% of 382px (3 rows of 116 + 2x16 gap)
+$hero-links-overlap-sm: 96px; // about one card, from a 566px block
+// Air between the lowest hero copy and the top of the first card.
+$hero-links-clearance: 28px;
+
+.hero-links {
+  position: relative;
+  z-index: 3;
+  margin-top: -$hero-links-overlap;
+}
+
+// The hero keeps enough room under its own copy that the block never
+// reaches the certification list. Bottom padding only: the hero's height,
+// image, scrim, type and actions are untouched.
+.hero {
+  padding-bottom: calc(var(--section-y) + #{$hero-links-overlap + $hero-links-clearance});
+}
+
+// The showcase below has to clear the half of the block hanging into it.
+.section--after-hero-links {
+  padding-top: var(--s-12);
+}
+
+@media (max-width: 1023px) {
+  .hero-links {
+    margin-top: -$hero-links-overlap-md;
+  }
+
+  .hero {
+    padding-bottom: calc(var(--section-y) + #{$hero-links-overlap-md + $hero-links-clearance});
+  }
+}
+
+@media (max-width: 767px) {
+  .hero-links {
+    margin-top: -$hero-links-overlap-sm;
+  }
+
+  .hero {
+    padding-bottom: calc(var(--section-y) + #{$hero-links-overlap-sm + $hero-links-clearance});
+  }
+}

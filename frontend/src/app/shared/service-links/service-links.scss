@@ -1,0 +1,209 @@
+// =====================================================================
+// Compact service links
+//
+// The row of six white cards that straddles the foot of the hero. Solid
+// and opaque throughout: the photograph shows *around* the cards, never
+// through them, so the titles keep full contrast wherever the hero image
+// happens to be light.
+// =====================================================================
+
+.svc-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-5);
+}
+
+.svc-link {
+  display: grid;
+  // icon | title and action | arrow lives inside the action row
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--s-5);
+  height: 100%;
+  min-height: 130px;
+  padding: 24px 28px;
+  border-radius: 16px;
+  border: 1px solid var(--c-border);
+  background: var(--c-white);
+  box-shadow:
+    0 10px 28px rgba(7, 39, 58, 0.1),
+    0 2px 8px rgba(7, 39, 58, 0.05);
+  color: var(--c-ink);
+  text-decoration: none;
+  transition:
+    transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    flex: none;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    // Line drawings, so every path is a stroke and nothing is filled.
+    .ln {
+      fill: none;
+      stroke: var(--c-blue);
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .ln--accent {
+      stroke: var(--c-green);
+    }
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+    min-width: 0;
+  }
+
+  &__title {
+    font-family: var(--font-heading);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-h4);
+    line-height: 1.15;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    color: var(--c-ink);
+    text-wrap: balance;
+  }
+
+  &__cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+  }
+
+  &__cta-label {
+    font-size: var(--fs-tiny);
+    font-weight: var(--fw-semibold);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--c-ink-muted);
+  }
+
+  &__arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    flex: none;
+    border: 1px solid var(--c-border-strong);
+    border-radius: 50%;
+    color: var(--c-ink-muted);
+    transition:
+      transform var(--dur) var(--ease),
+      border-color var(--dur) var(--ease),
+      color var(--dur) var(--ease);
+
+    svg {
+      width: 12px;
+      height: 12px;
+      fill: currentColor;
+    }
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--c-focus);
+    outline-offset: 3px;
+  }
+}
+
+// --- interactions --------------------------------------------------------
+
+@media (hover: hover) and (pointer: fine) {
+  .svc-link:hover {
+    transform: translateY(-2px);
+    border-color: var(--c-blue-mid);
+    box-shadow:
+      0 14px 34px rgba(7, 39, 58, 0.14),
+      0 3px 10px rgba(7, 39, 58, 0.06);
+  }
+
+  .svc-link:hover .svc-link__arrow {
+    transform: translateX(3px);
+    border-color: var(--c-blue);
+    color: var(--c-blue);
+  }
+}
+
+// --- responsive ----------------------------------------------------------
+
+// Two columns, three rows. The titles still fit on one line at this width,
+// so the labels stay readable rather than being squeezed into three.
+@media (max-width: 1023px) {
+  .svc-links {
+    // Two columns, three rows. Three would put every label on two lines at
+    // this width.
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-4);
+  }
+
+  .svc-link {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--s-4);
+    min-height: 116px;
+    padding: 20px 22px;
+  }
+
+  .svc-link__icon {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 767px) {
+  .svc-links {
+    // One column. Two would put "NETTOYAGE / ENTRETIEN" on three lines and
+    // leave the other five cards padded out to match it.
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-3);
+  }
+
+  .svc-link {
+    // 44px of target height is the floor, and the card is far above it, but
+    // the padding comes down so six cards do not fill the whole screen.
+    min-height: 84px;
+    padding: 16px 18px;
+    gap: var(--s-4);
+    border-radius: 14px;
+  }
+
+  .svc-link__icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .svc-link__title {
+    font-size: var(--fs-body);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .svc-link,
+  .svc-link__arrow {
+    transition: none;
+  }
+
+  .svc-link:hover {
+    transform: none;
+  }
+
+  .svc-link:hover .svc-link__arrow {
+    transform: none;
+  }
+}
